@@ -49,5 +49,5 @@ Only download media you own or have permission to download, and follow applicabl
 ---
 
 **Developer:** DappKunzXD  
-**Maintainers:** DappKunzXD, RizKy_Doo  
+**Maintainers:** DappKunzXD
 **© 2026 DappKunzXD**
