@@ -26,7 +26,6 @@ Original developer of Downloader.
 
 ### Maintainers
 - **DappKunzXD**
-- **RizKy_Doo**
 
 Responsible for maintaining the project, fixing bugs, and improving the application.
 
