@@ -1,4 +1,4 @@
-# DappKunzXD-Downloader
+# MediaDownloader
 
 **A modern Android media downloader.**
 
