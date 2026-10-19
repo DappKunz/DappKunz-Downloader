@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Downloader</string>
+
+    <!-- Navigasi -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_settings">Pengaturan</string>
+    <string name="nav_new_download">Unduhan Baru</string>
+    <string name="nav_download">Download</string>
+    <string name="nav_music">Musik</string>
+    <string name="nav_online_music">Online</string>
+
+    <!-- Online Music -->
+    <string name="online_music_title">Online Music</string>
+    <string name="online_music_subtitle">Telusuri dan unduh musik dari sumber yang didukung.</string>
+    <string name="online_music_hint">Cari lagu, artis, atau kata kunci</string>
+    <string name="online_music_search">Cari</string>
+    <string name="online_music_idle_title">Cari musik online</string>
+    <string name="online_music_idle_desc">Masukkan kata kunci lalu tekan Cari. Hasil diambil langsung dari sumber yang didukung aplikasi.</string>
+    <string name="online_music_searching">Mencari…</string>
+    <string name="online_music_empty_title">Tidak ada hasil</string>
+    <string name="online_music_empty_desc">Tidak ada hasil untuk \"%1$s\". Coba kata kunci lain.</string>
+    <string name="online_music_error_title">Pencarian gagal</string>
+    <string name="online_music_retry">Coba lagi</string>
+    <string name="online_music_results">Hasil untuk \"%1$s\"</string>
+    <string name="online_music_results_count">%1$d hasil</string>
+    <string name="online_music_result_action">Unduh</string>
+    <string name="online_music_sections_title">Kategori &amp; Trending</string>
+    <string name="online_music_sections_desc">Belum tersedia. Bagian ini memerlukan sumber konten yang belum dikonfigurasi, sehingga dibiarkan kosong daripada menampilkan data palsu.</string>
+
+    <!-- Sapaan Beranda -->
+    <string name="greeting_morning">Selamat pagi</string>
+    <string name="greeting_afternoon">Selamat siang</string>
+    <string name="greeting_evening">Selamat sore</string>
+    <string name="greeting_night">Selamat malam</string>
+    <string name="greeting_subtitle">Siap mengunduh sesuatu hari ini?</string>
+    <string name="greeting_desc">Unduh dan kelola media favoritmu langsung di perangkat ini.</string>
+
+    <!-- Statistik -->
+    <string name="stat_completed">Selesai</string>
+    <string name="stat_active">Aktif</string>
+    <string name="stat_total_data">Total data</string>
+
+    <!-- Beranda -->
+    <string name="section_active_downloads">Sedang berjalan</string>
+    <string name="section_history">Riwayat Download</string>
+    <string name="home_recent_downloads">Baru diunduh</string>
+    <string name="home_download_by_type">Unduh berdasarkan jenis</string>
+    <string name="home_type_video">Video</string>
+    <string name="home_type_audio">Audio</string>
+    <string name="home_type_photo">Foto</string>
+    <string name="home_type_playlist">Playlist</string>
+    <string name="home_active_empty_title">Belum ada download aktif</string>
+    <string name="home_active_empty_desc">Tautkan media untuk mulai mengunduh. Tekan tombol biru di bawah.</string>
+    <string name="history_see_all">Lihat semua</string>
+    <string name="home_link_hint">Tempel atau ketik tautan media</string>
+    <string name="home_paste">Tempel</string>
+    <string name="home_quick_actions">Aksi Cepat</string>
+    <string name="home_quick_history">Riwayat</string>
+    <string name="home_clipboard_empty">Papan klip kosong</string>
+    <string name="history_empty_title">Belum ada riwayat</string>
+    <string name="history_empty_desc">Hasil unduhan yang selesai, gagal, atau dibatalkan akan muncul di sini.</string>
+    <string name="history_subtitle">Semua unduhanmu, tersusun rapi.</string>
+    <string name="history_group_today">Hari ini</string>
+    <string name="history_group_yesterday">Kemarin</string>
+    <string name="history_filter_failed">Gagal</string>
+
+    <!-- Tahap pekerjaan -->
+    <string name="stage_queued">Menunggu antrean</string>
+    <string name="stage_downloading">Mengunduh…</string>
+    <string name="stage_processing">Memproses…</string>
+    <string name="stage_packaging">Mengemas ZIP…</string>
+    <string name="stage_completed">Selesai</string>
+    <string name="stage_failed">Gagal</string>
+    <string name="stage_cancelled">Dibatalkan</string>
+    <string name="stage_paused">Dijeda</string>
+
+    <!-- Kartu unduhan -->
+    <string name="job_pause">Jeda</string>
+    <string name="job_resume">Lanjutkan</string>
+    <string name="job_cancel">Batal</string>
+    <string name="job_open">Buka</string>
+    <string name="job_share">Bagikan</string>
+    <string name="job_item_progress">Item %1$d dari %2$d</string>
+    <string name="job_bytes_progress">%1$s / %2$s</string>
+    <string name="job_speed">%1$s/s</string>
+    <string name="job_eta">Sisa ± %1$s</string>
+    <string name="job_speed_calculating">Menghitung kecepatan…</string>
+    <string name="job_cancel_confirm_title">Batalkan unduhan?</string>
+    <string name="job_cancel_confirm_desc">Progres unduhan ini akan dihapus dan tidak bisa dilanjutkan.</string>
+    <string name="job_dismiss">Tutup</string>
+    <string name="job_retry">Coba lagi</string>
+    <string name="job_restored_paused">Dipulihkan — ketuk Lanjut untuk melanjutkan</string>
+    <string name="job_items_summary">%1$d/%2$d item selesai</string>
+    <string name="job_items_show">Lihat item (%1$d)</string>
+    <string name="job_items_hide">Sembunyikan item</string>
+    <string name="job_items_failed_count">%1$d gagal</string>
+    <string name="job_items_canceled_count">%1$d dibatalkan</string>
+    <string name="job_item_untitled">Item %1$d</string>
+    <string name="job_item_percent">%1$d%%</string>
+    <string name="item_waiting">Menunggu</string>
+    <string name="item_running">Mengunduh…</string>
+    <string name="item_processing">Memproses…</string>
+    <string name="item_completed">Selesai</string>
+    <string name="item_failed">Gagal</string>
+    <string name="item_canceled">Dibatalkan</string>
+    <string name="item_cancel">Batalkan item ini</string>
+    <string name="pl_all_canceled">Semua item dibatalkan</string>
+
+    <!-- Riwayat -->
+    <string name="history_title">Riwayat Download</string>
+    <string name="history_status_completed">Berhasil</string>
+    <string name="history_status_failed">Gagal</string>
+    <string name="history_status_cancelled">Dibatalkan</string>
+    <string name="history_retry">Ulangi</string>
+    <string name="history_file_missing">File sudah tidak ada di perangkat</string>
+    <string name="history_clear_all">Bersihkan semua</string>
+    <string name="history_clear_confirm_title">Bersihkan seluruh riwayat?</string>
+    <string name="history_clear_confirm_desc">Semua entri riwayat dihapus. File hasil unduhan tidak ikut terhapus.</string>
+    <string name="history_delete_confirm_title">Hapus entri riwayat?</string>
+    <string name="history_delete_confirm_desc">Entri ini dihapus dari riwayat. File yang sudah terunduh tidak ikut terhapus.</string>
+    <string name="history_search_hint">Cari judul atau nama file…</string>
+    <string name="history_filter_all">Semua</string>
+    <string name="history_filter_video">Video</string>
+    <string name="history_filter_audio">Audio</string>
+    <string name="history_filter_photo">Foto</string>
+    <string name="history_filter_playlist">Playlist</string>
+    <string name="history_no_results_title">Tidak ada hasil</string>
+    <string name="history_no_results_desc">Coba kata kunci atau filter lain.</string>
+
+    <!-- Umum -->
+    <string name="action_delete">Hapus</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_back">Kembali</string>
+    <string name="action_close">Tutup</string>
+    <string name="action_change">Ubah</string>
+
+    <!-- Layar Unduhan Baru -->
+    <string name="new_download_title">Analisis Media</string>
+    <string name="new_download_subtitle">Periksa media sebelum memilih output.</string>
+    <string name="download_preset_label">Preset</string>
+    <string name="download_preset_best">Terbaik</string>
+    <string name="download_preset_audio">Audio</string>
+    <string name="download_preset_storage">Hemat</string>
+    <string name="download_preset_balanced">Seimbang</string>
+    <string name="download_preset_storage_confirm_title">Pakai preset Hemat?</string>
+    <string name="download_preset_storage_confirm_desc">Video dibatasi 480p tanpa HD (audio saja memakai 128 kbps). Kualitas lebih rendah, tetapi ukuran file lebih kecil.</string>
+    <string name="download_preset_storage_confirm_action">Pakai Hemat</string>
+    <string name="download_preset_balanced_note">Preset Seimbang: mode Turbo dinonaktifkan agar antrean lebih ringan.</string>
+    <string name="url_hint">Tautan media (YouTube, TikTok, Instagram, X, dll.)</string>
+    <string name="action_paste">Tempel dari papan klip</string>
+    <string name="action_clear_link">Hapus tautan</string>
+    <string name="action_analyze">Analisis</string>
+    <string name="action_download_now">Mulai Download</string>
+    <string name="format_title">Format hasil</string>
+    <string name="quality_bitrate">Bitrate audio</string>
+    <string name="quality_resolution">Resolusi video</string>
+    <string name="quality_bitrate_best">%1$d Kbps — Terbaik</string>
+    <string name="quality_bitrate_value">%1$d Kbps</string>
+    <string name="quality_resolution_auto">Auto — terbaik</string>
+    <string name="quality_resolution_value">%1$dp</string>
+    <string name="quality_hd_title">Mode HD</string>
+    <string name="quality_hd_desc">Unduh kualitas tertinggi lalu konversi ke MP4.</string>
+    <string name="quality_photo_note">Foto diunduh dalam kualitas penuh. Centang ZIP untuk mengemas playlist menjadi satu arsip.</string>
+    <string name="supported_platforms">YouTube • TikTok • Instagram • Twitter/X • Facebook • Vimeo • foto langsung</string>
+
+    <!-- Playlist -->
+    <string name="playlist_default_title">Playlist</string>
+    <string name="playlist_summary">%1$d item • %2$s</string>
+    <string name="playlist_selected_count">%1$d dipilih</string>
+    <string name="playlist_select_all">Pilih semua</string>
+    <string name="playlist_unselect_all">Kosongkan</string>
+    <string name="playlist_zip">ZIP</string>
+    <string name="playlist_need_selection">Pilih minimal satu item playlist untuk diunduh.</string>
+    <string name="estimate_size">Perkiraan ukuran ≈ %1$s</string>
+    <string name="estimate_total">Total terpilih ≈ %1$s</string>
+    <string name="estimate_short">≈ %1$s</string>
+
+    <!-- Music Player (BETA) -->
+    <string name="player_title">Music Player</string>
+    <string name="player_beta">BETA</string>
+    <string name="player_desc">Dengarkan musik hasil unduhanmu.</string>
+    <string name="player_rescan">Pindai ulang</string>
+    <string name="player_search_hint">Cari judul atau artis…</string>
+    <string name="player_sort_name">Nama</string>
+    <string name="player_sort_artist">Artis</string>
+    <string name="player_sort_recent">Terbaru</string>
+    <string name="player_tracks_count">%1$d lagu</string>
+    <string name="player_loading">Memuat library musik…</string>
+    <string name="player_empty_title">Belum ada lagu</string>
+    <string name="player_empty_desc">Unduh audio MP3/M4A atau berikan akses ke file musik di perangkat.</string>
+    <string name="player_no_result_title">Tidak ada hasil</string>
+    <string name="player_no_result_desc">Coba kata kunci atau urutan lain.</string>
+    <string name="player_filter_favorites">Favorit</string>
+    <string name="player_favorite_add">Tambah ke favorit</string>
+    <string name="player_favorite_remove">Hapus dari favorit</string>
+    <string name="player_no_favorites_title">Belum ada favorit</string>
+    <string name="player_no_favorites_desc">Tandai lagu dengan ikon hati untuk menambahkannya ke favorit.</string>
+    <string name="player_scan_failed_title">Gagal memindai musik</string>
+    <string name="player_scan_failed_desc">Coba pindai ulang. Jika terus gagal, periksa izin penyimpanan.</string>
+    <string name="player_open_settings">Buka pengaturan aplikasi</string>
+    <string name="player_need_permission_title">Butuh izin akses musik</string>
+    <string name="player_need_permission_desc">Izinkan akses ke file audio agar semua lagu di perangkat terdeteksi. File hasil download aplikasi tetap tampil otomatis tanpa izin ini.</string>
+    <string name="player_library_count">%1$d lagu terdeteksi</string>
+    <string name="player_grant_access">Berikan akses</string>
+    <string name="player_unknown_artist">Artis tidak dikenal</string>
+    <string name="player_own_badge">Download</string>
+    <string name="player_now_playing">Sedang diputar</string>
+    <string name="player_preparing">Menyiapkan audio…</string>
+    <string name="player_play">Putar</string>
+    <string name="player_pause">Jeda</string>
+    <string name="player_next">Berikutnya</string>
+    <string name="player_previous">Sebelumnya</string>
+    <string name="player_shuffle">Acak</string>
+    <string name="player_repeat_off">Ulangi: mati</string>
+    <string name="player_repeat_all">Ulangi: semua</string>
+    <string name="player_repeat_one">Ulangi: satu</string>
+    <string name="player_error_generic">File ini tidak dapat diputar.</string>
+    <string name="player_error_unsupported">Format file ini tidak didukung pemutar.</string>
+
+    <!-- Equalizer -->
+    <string name="eq_title">Equalizer</string>
+    <string name="eq_preset">Preset</string>
+    <string name="eq_reset">Reset ke default</string>
+    <string name="eq_unavailable">Equalizer tidak tersedia di perangkat ini. Musik tetap dapat diputar normal.</string>
+    <string name="eq_no_bands">Band frekuensi tidak terbaca dari perangkat.</string>
+
+    <!-- Jenis media dan label -->
+    <string name="media_type_video">Video</string>
+    <string name="media_type_audio">Audio</string>
+    <string name="media_type_photo">Foto</string>
+    <string name="media_type_playlist">Playlist</string>
+    <string name="badge_item_count">%1$d item</string>
+    <string name="media_preview_ready">Siap diunduh</string>
+    <string name="format_tag_photo">Foto</string>
+    <string name="quality_label_auto_hd">HD • Auto</string>
+    <string name="quality_label_auto">Auto</string>
+    <string name="quality_label_kbps">%1$d Kbps</string>
+    <string name="quality_label_height">%1$dp</string>
+    <string name="quality_label_full">Kualitas penuh</string>
+
+    <!-- Hasil unduhan -->
+    <string name="result_saved_to">Tersimpan di %1$s</string>
+    <string name="result_failed_items">%1$d item gagal diunduh dan dilewati.</string>
+    <string name="result_open_failed">Tidak ada aplikasi yang bisa membuka file ini. File tersimpan di folder unduhan.</string>
+    <string name="result_share_failed">Tidak dapat membagikan file ini.</string>
+    <string name="result_share_chooser">Bagikan file</string>
+
+    <!-- Pengaturan -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_download_section">Unduhan</string>
+    <string name="settings_turbo_title">Turbo Download</string>
+    <string name="settings_turbo_desc">Kecepatan maksimal: koneksi paralel lebih banyak. Lebih boros baterai dan data.</string>
+    <string name="settings_storage_section">Penyimpanan</string>
+    <string name="settings_history_section">Riwayat &amp; Log</string>
+    <string name="settings_history_title">Riwayat Download</string>
+    <string name="settings_history_desc">Lihat semua hasil unduhan.</string>
+    <string name="settings_log_title">Log Aplikasi</string>
+    <string name="settings_log_desc">Catatan aktivitas dan error untuk debugging.</string>
+    <string name="settings_folder_title">Folder Download</string>
+    <string name="settings_folder_current">Folder saat ini</string>
+    <string name="settings_folder_default">Download/Downloader (bawaan)</string>
+    <string name="settings_folder_pick">Pilih Folder</string>
+    <string name="settings_folder_change">Ganti Folder</string>
+    <string name="settings_folder_picked">Folder dipilih: %1$s</string>
+    <string name="settings_folder_no_write">Folder ini tidak memberi izin menulis. Silakan pilih folder lain.</string>
+    <string name="settings_folder_access_lost">Akses folder pilihan hilang. Silakan pilih folder kembali.</string>
+    <string name="settings_folder_reset_title">Kembalikan Folder Bawaan</string>
+    <string name="settings_folder_reset_desc">Kembali menyimpan hasil unduhan ke Download/Downloader.</string>
+    <string name="settings_folder_reset_action">Reset</string>
+    <string name="settings_folder_reset_done">Folder dikembalikan ke bawaan.</string>
+    <string name="settings_language_section">Bahasa</string>
+    <string name="settings_language_title">Bahasa Aplikasi</string>
+    <string name="settings_language_dialog_title">Pilih Bahasa</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="language_english">English</string>
+    <string name="settings_cache_section">Cache</string>
+    <string name="settings_cache_title">Hapus Cache</string>
+    <string name="settings_cache_desc">Menghapus file sementara untuk membebaskan ruang penyimpanan.</string>
+    <string name="settings_cache_size">Ukuran cache saat ini: %1$s</string>
+    <string name="settings_cache_calculating">Menghitung ukuran cache…</string>
+    <string name="settings_cache_confirm_title">Hapus cache?</string>
+    <string name="settings_cache_confirm_desc">File sementara akan dihapus. File hasil unduhan, riwayat, dan pengaturan tidak terhapus.</string>
+    <string name="settings_cache_confirm_action">Hapus Cache</string>
+    <string name="settings_cache_freed">%1$s dibebaskan.</string>
+    <string name="settings_cache_nothing">Tidak ada cache yang bisa dihapus.</string>
+    <string name="settings_cache_busy">Cache unduhan aktif dilewati.</string>
+    <string name="settings_about_section">Aplikasi</string>
+    <string name="settings_about_title">Tentang Aplikasi</string>
+    <string name="settings_debug_title">Debug</string>
+    <string name="settings_debug_desc">Info perangkat, mesin, dan penyimpanan.</string>
+
+    <!-- Tentang -->
+    <string name="about_title">Tentang Aplikasi</string>
+    <string name="about_version">Versi %1$s (build %2$s)</string>
+    <string name="about_version_short">v%1$s</string>
+    <string name="about_developer_label">Developer</string>
+    <string name="about_developer_value">DappKunzXD</string>
+    <string name="about_build_info">Informasi Build Aplikasi</string>
+    <string name="about_language">Bahasa</string>
+    <string name="about_version_label">Versi :</string>
+    <string name="about_sdk_range">sdk%1$d - %2$d</string>
+    <string name="about_components_title">Komponen &amp; Lisensi</string>
+    <string name="about_components_list">yt-dlp • FFmpeg • Media3 • Jetpack Compose</string>
+    <string name="about_licenses_note">Lisensi mengikuti dependency dan konfigurasi build.</string>
+    <string name="about_source_changelog">Sumber &amp; changelog</string>
+    <string name="about_github_repo">Repositori GitHub</string>
+
+    <!-- Notifikasi -->
+    <string name="notification_channel_name">Unduhan</string>
+    <string name="notification_channel_desc">Progres unduhan yang sedang berjalan</string>
+    <string name="notification_title_single">Mengunduh: %1$s</string>
+    <string name="notification_title_multi">Mengunduh %1$d item</string>
+    <string name="notification_line">%1$s — %2$s</string>
+    <string name="notification_progress_text">%1$d%% • %2$s</string>
+    <string name="notification_progress_text_nospeed">%1$d%%</string>
+    <string name="notification_preparing">Menyiapkan unduhan…</string>
+    <string name="notification_action_cancel">Batal</string>
+
+    <!-- Mesin -->
+    <string name="engine_preparing">Menyiapkan mesin…</string>
+    <string name="engine_ready">Siap • Tanpa server</string>
+    <string name="engine_failed">Mesin gagal</string>
+    <string name="engine_failed_banner">Mesin unduhan gagal disiapkan: %1$s</string>
+
+    <!-- Kesalahan (core) -->
+    <string name="err_unknown">Terjadi kesalahan yang tidak diketahui.</string>
+    <string name="err_job_timeout">Unduhan melebihi batas waktu dan dihentikan.</string>
+    <string name="err_empty_url">Tautan kosong. Tempel tautan media terlebih dahulu.</string>
+    <string name="err_invalid_url">Format tautan tidak valid.</string>
+    <string name="err_http_only">Hanya tautan http/https yang didukung.</string>
+    <string name="err_no_domain">Tautan tidak memiliki domain yang valid.</string>
+    <string name="err_spotify">Spotify tidak didukung karena audionya terproteksi DRM. Gunakan tautan YouTube, SoundCloud, atau platform lain yang didukung.</string>
+    <string name="err_drm_platform">Platform %1$s tidak didukung untuk unduhan langsung karena proteksi DRM pada audionya.</string>
+    <string name="err_image_gallery">Tautan galeri/beranda foto belum bisa diproses langsung di perangkat. Gunakan tautan gambar langsung (.jpg/.png/.webp) atau tautan video/audio.</string>
+    <string name="err_extractor_failed">Ekstraktor tidak mengenali tautan ini.</string>
+    <string name="err_metadata_unreadable">Metadata dari tautan ini tidak dapat dibaca.</string>
+    <string name="err_403">Akses unduhan ditolak server sumber (HTTP 403). Biasanya mesin yt-dlp perlu diperbarui — buka ulang aplikasi agar diperbarui otomatis, lalu coba lagi.</string>
+    <string name="err_404">Konten tidak ditemukan (404). Tautan mungkin sudah dihapus atau salah.</string>
+    <string name="err_429">Terlalu banyak permintaan (429). Tunggu sebentar lalu coba lagi.</string>
+    <string name="err_unavailable">Konten ini tidak tersedia (dihapus, privat, atau dibatasi).</string>
+    <string name="err_age_restricted">Konten dibatasi umur dan memerlukan login.</string>
+    <string name="err_region">Konten ini diblokir untuk wilayah Anda.</string>
+    <string name="err_signin">Konten ini memerlukan login. Gunakan tautan publik lainnya.</string>
+    <string name="err_unsupported_url">Tautan ini tidak didukung. Gunakan tautan YouTube, TikTok, SoundCloud, atau platform lain yang didukung.</string>
+    <string name="err_dns">Tidak dapat menghubungi server sumber. Periksa koneksi internet Anda lalu coba lagi.</string>
+    <string name="err_timeout">Koneksi ke server sumber habis waktu. Periksa jaringan lalu coba lagi.</string>
+    <string name="err_storage_failed">Penyimpanan gagal: %1$s</string>
+    <string name="err_storage_low">Ruang penyimpanan tidak cukup. Tersedia %1$s, dibutuhkan sekitar %2$s. Hapus berkas atau pilih folder lain.</string>
+    <string name="err_photo_invalid">Berkas gambar hasil unduhan tidak valid.</string>
+    <string name="err_file_missing">File hasil tidak ditemukan untuk disimpan.</string>
+    <string name="err_audio_missing">Berkas audio hasil unduhan tidak ditemukan.</string>
+    <string name="err_video_missing">Berkas video hasil unduhan tidak ditemukan.</string>
+    <string name="err_ffmpeg_audio">Konversi audio dengan FFmpeg gagal.</string>
+    <string name="err_ffmpeg_video">Pemrosesan video dengan FFmpeg gagal.</string>
+    <string name="err_ffmpeg_missing">Mesin FFmpeg tidak ditemukan di aplikasi. Buka ulang aplikasi lalu coba lagi.</string>
+    <string name="err_ffmpeg_start">Gagal menjalankan FFmpeg: %1$s</string>
+    <string name="err_ffmpeg_crashed">FFmpeg berhenti tidak normal: %1$s</string>
+    <string name="err_format_unsupported">Format tidak didukung: %1$s</string>
+    <string name="err_playlist_empty_selection">Tidak ada item playlist yang dipilih.</string>
+    <string name="err_playlist_all_failed">Semua item playlist gagal diunduh. %1$s</string>
+    <string name="err_photo_not_direct">Tautan ini bukan gambar langsung sehingga tidak dapat diunduh tanpa mesin gallery-dl.</string>
+    <string name="err_photo_download">Gagal mengunduh gambar dari tautan tersebut.</string>
+    <string name="err_photo_empty">Gambar yang diunduh kosong atau rusak.</string>
+    <string name="err_download_generic">Unduhan gagal.</string>
+    <string name="err_url_empty">Tautan kosong. Tempel tautan media terlebih dahulu.</string>
+
+    <!-- Pesan pipeline -->
+    <string name="pl_preparing">Menyiapkan unduhan…</string>
+    <string name="pl_fetch_metadata">Mengambil metadata…</string>
+    <string name="pl_download_audio">Mengunduh audio…</string>
+    <string name="pl_download_video">Mengunduh video…</string>
+    <string name="pl_download_photo">Mengunduh foto…</string>
+    <string name="pl_convert_audio">Konversi FFmpeg…</string>
+    <string name="pl_process_video">Memproses video FFmpeg…</string>
+    <string name="pl_embed_cover">Menulis tag audio…</string>
+    <string name="pl_saving">Menyimpan berkas…</string>
+    <string name="pl_zip">Mengemas ZIP…</string>
+    <string name="pl_playlist_downloading">Mengunduh %1$d item playlist%2$s…</string>
+    <string name="pl_photopost">Mengunduh %1$d foto…</string>
+
+    <!-- Log & Debug -->
+    <string name="log_title">Log Aplikasi</string>
+    <string name="log_clear">Hapus</string>
+    <string name="log_empty">Belum ada catatan log.</string>
+    <string name="debug_copy_info">Salin info</string>
+    <string name="debug_open_log">Buka Log</string>
+    <string name="debug_copied">Info debug disalin.</string>
+    <string name="debug_app">Aplikasi</string>
+    <string name="debug_device">Perangkat</string>
+    <string name="debug_android">Android</string>
+    <string name="debug_engine">Mesin</string>
+    <string name="debug_folder">Folder download</string>
+    <string name="debug_turbo">Turbo</string>
+    <string name="pl_playlist_cap"> (dibatasi %1$d dari %2$d item per antrean)</string>
+    <string name="pl_item_url_missing">tautan item tidak ditemukan</string>
+    <string name="pl_item_failed">gagal diunduh</string>
+    <string name="pl_resume">Melanjutkan unduhan…</string>
+
+    <!-- Pesan singkat (snackbar) -->
+    <string name="snackbar_started">%1$s ditambahkan ke antrean unduhan.</string>
+    <string name="snackbar_completed">%1$s selesai diunduh.</string>
+    <string name="snackbar_failed">%1$s gagal: %2$s</string>
+    <string name="snackbar_cancelled">%1$s dibatalkan.</string>
+    <string name="snackbar_duplicate">Sudah ada unduhan aktif untuk tautan ini.</string>
+    <string name="snackbar_clipboard_empty">Tidak ada tautan di papan klip.</string>
+    <!-- Pembaruan aplikasi -->
+    <string name="settings_update_section">Pembaruan</string>
+    <string name="settings_update_title">Pembaruan Aplikasi</string>
+    <string name="settings_update_desc">Periksa rilis terbaru dari GitHub.</string>
+    <string name="upd_title">Pembaruan Aplikasi</string>
+    <string name="upd_installed">Terpasang: %1$s</string>
+    <string name="upd_last_checked">Terakhir diperiksa: %1$s</string>
+    <string name="upd_never_checked">Belum pernah diperiksa</string>
+    <string name="upd_check">Periksa Pembaruan</string>
+    <string name="upd_retry">Coba Lagi</string>
+    <string name="upd_checking">Memeriksa rilis terbaru…</string>
+    <string name="upd_idle">Periksa pembaruan untuk melihat rilis terbaru dari GitHub.</string>
+    <string name="upd_no_release">Belum ada rilis yang dipublikasikan.</string>
+    <string name="upd_up_to_date">Aplikasi sudah menggunakan versi terbaru.</string>
+    <string name="upd_uncomparable">Versi rilis tidak dapat dibandingkan otomatis. Buka halaman rilis untuk detail.</string>
+    <string name="upd_latest">Versi terbaru: %1$s</string>
+    <string name="upd_release_date">Dirilis: %1$s</string>
+    <string name="upd_available">Pembaruan tersedia</string>
+    <string name="upd_no_apk">Tidak ada berkas APK yang cocok untuk perangkat ini pada rilis tersebut.</string>
+    <string name="upd_download">Unduh (%1$s)</string>
+    <string name="upd_download_simple">Unduh</string>
+    <string name="upd_downloading">Mengunduh… %1$d%%</string>
+    <string name="upd_downloading_unknown">Mengunduh… %1$s</string>
+    <string name="upd_download_cancel">Batalkan Unduhan</string>
+    <string name="upd_downloaded_ready">Unduhan selesai dan terverifikasi. Lanjutkan untuk memasang.</string>
+    <string name="upd_install">Pasang</string>
+    <string name="upd_notes">Catatan rilis</string>
+    <string name="upd_open_release">Buka halaman rilis di GitHub</string>
+    <string name="upd_permission_title">Izin pemasangan diperlukan</string>
+    <string name="upd_permission_desc">Aktifkan izin "Izinkan dari sumber ini" agar aplikasi dapat membuka pemasang paket.</string>
+    <string name="upd_permission_action">Buka Pengaturan</string>
+    <string name="upd_error_network">Gagal menghubungi GitHub. Periksa koneksi lalu coba lagi.</string>
+    <string name="upd_error_rate">Permintaan ke GitHub dibatasi. Coba beberapa saat lagi.</string>
+    <string name="upd_error_server">GitHub mengembalikan kesalahan. Coba lagi nanti.</string>
+    <string name="upd_error_malformed">Balasan GitHub tidak dapat dibaca.</string>
+    <string name="upd_error_retry_hint">Terjadi kesalahan saat memeriksa pembaruan.</string>
+    <string name="upd_error_download">Unduhan gagal.</string>
+    <string name="upd_error_install">Tidak dapat membuka pemasang paket.</string>
+    <string name="upd_validation_package">APK bukan untuk aplikasi ini.</string>
+    <string name="upd_validation_signature">Tanda tangan APK tidak cocok dengan aplikasi terpasang.</string>
+    <string name="upd_validation_unreadable">Berkas APK tidak dapat dibaca.</string>
+
+    <!-- Donasi -->
+    <string name="settings_donation_section">Dukungan</string>
+    <string name="settings_donation_title">Donasi</string>
+    <string name="settings_donation_desc">Dukung pengembangan Downloader</string>
+    <string name="donation_title">Donasi</string>
+    <string name="donation_subtitle">Halaman Saweria terbuka di dalam aplikasi.</string>
+    <string name="donation_reload">Muat Ulang</string>
+    <string name="donation_error_title">Halaman gagal dimuat</string>
+    <string name="donation_error_desc">Periksa koneksi internet, lalu muat ulang halaman.</string>
+    <string name="donation_ssl_blocked">Koneksi ke halaman ini tidak aman, jadi pemuatan dibatalkan.</string>
+    <string name="donation_blocked_malformed">Tautan tidak dikenali.</string>
+    <string name="donation_blocked_scheme">Jenis tautan ini tidak diizinkan.</string>
+    <string name="donation_blocked_https">Hanya tautan HTTPS yang diizinkan.</string>
+    <string name="donation_blocked_local">Tautan ke jaringan lokal diblokir.</string>
+    <string name="donation_external_title">Buka di luar aplikasi?</string>
+    <string name="donation_external_desc">Tautan ini meninggalkan halaman Saweria dan akan dibuka oleh peramban atau aplikasi lain.</string>
+    <string name="donation_external_browser">Buka peramban</string>
+    <string name="donation_external_app">Buka aplikasi</string>
+    <string name="donation_external_missing">Tidak ada aplikasi di perangkat ini yang bisa membuka tautan tersebut.</string>
+
+    <!-- Music Library &amp; Now Playing -->
+    <string name="player_cat_songs">Lagu</string>
+    <string name="player_cat_albums">Album</string>
+    <string name="player_cat_artists">Artis</string>
+    <string name="player_cat_folders">Folder</string>
+    <string name="player_cat_favorites">Favorit</string>
+    <string name="player_cat_playlists">Playlist</string>
+    <string name="player_sort_album">Album</string>
+    <string name="player_play_all">Putar semua</string>
+    <string name="player_shuffle_all">Acak semua</string>
+    <string name="player_unknown_album">Album tidak dikenal</string>
+    <string name="player_unknown_folder">Folder tidak dikenal</string>
+    <string name="player_more_actions">Opsi lain</string>
+    <string name="player_play_now">Putar sekarang</string>
+    <string name="player_play_next">Putar berikutnya</string>
+    <string name="player_add_queue">Tambah ke antrean</string>
+    <string name="player_queued">Ditambahkan ke antrean.</string>
+    <string name="player_add_playlist">Tambah ke playlist</string>
+    <string name="player_new_playlist">Playlist baru</string>
+    <string name="player_playlist_name">Nama playlist</string>
+    <string name="player_playlist_create">Buat</string>
+    <string name="player_playlist_rename">Ubah nama</string>
+    <string name="player_playlist_delete">Hapus playlist</string>
+    <string name="player_playlist_delete_confirm">Hapus playlist %1$s? Lagu di perangkat tidak ikut terhapus.</string>
+    <string name="player_playlist_created">Playlist %1$s dibuat.</string>
+    <string name="player_repeat">Ulangi</string>
+    <string name="player_playlist_empty_title">Playlist masih kosong</string>
+    <string name="player_playlist_empty_desc">Tambahkan lagu lewat menu tiga titik pada daftar lagu.</string>
+    <string name="player_playlists_empty_title">Belum ada playlist</string>
+    <string name="player_playlists_empty_desc">Buat playlist untuk menyusun lagu pilihanmu.</string>
+    <string name="player_playlist_added">Ditambahkan ke playlist %1$s.</string>
+    <string name="player_playlist_exists">Sudah ada di playlist %1$s.</string>
+    <string name="player_playlist_removed">Dikeluarkan dari playlist.</string>
+    <string name="player_playlist_missing">%1$d lagu tidak ditemukan lagi dan dilewati.</string>
+    <string name="player_remove_from_playlist">Keluarkan dari playlist</string>
+    <string name="player_queue_title">Antrean</string>
+    <string name="player_queue_empty">Antrean kosong.</string>
+    <string name="player_queue_count">%1$d lagu di antrean</string>
+    <string name="player_queue_remove">Keluarkan dari antrean</string>
+    <string name="player_open_queue">Antrean</string>
+    <string name="player_albums_count">%1$d album</string>
+    <string name="player_artists_count">%1$d artis</string>
+    <string name="player_folders_count">%1$d folder</string>
+    <string name="player_playlists_count">%1$d playlist</string>
+    <string name="player_missing_file">Berkas sudah tidak ada</string>
+    <string name="player_group_tracks">%1$d lagu</string>
+</resources>

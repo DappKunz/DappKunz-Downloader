@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Downloader</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_new_download">New Download</string>
+    <string name="nav_download">Download</string>
+    <string name="nav_music">Music</string>
+    <string name="nav_online_music">Online</string>
+
+    <!-- Online Music -->
+    <string name="online_music_title">Online Music</string>
+    <string name="online_music_subtitle">Browse and download music from supported sources.</string>
+    <string name="online_music_hint">Search songs, artists, or keywords</string>
+    <string name="online_music_search">Search</string>
+    <string name="online_music_idle_title">Search online music</string>
+    <string name="online_music_idle_desc">Type a keyword and press Search. Results come directly from the sources this app supports.</string>
+    <string name="online_music_searching">Searching…</string>
+    <string name="online_music_empty_title">No results</string>
+    <string name="online_music_empty_desc">No results for \"%1$s\". Try another keyword.</string>
+    <string name="online_music_error_title">Search failed</string>
+    <string name="online_music_retry">Try again</string>
+    <string name="online_music_results">Results for \"%1$s\"</string>
+    <string name="online_music_results_count">%1$d results</string>
+    <string name="online_music_result_action">Download</string>
+    <string name="online_music_sections_title">Categories &amp; Trending</string>
+    <string name="online_music_sections_desc">Not available yet. This section needs a content source that is not configured, so it stays empty instead of showing fake data.</string>
+
+    <!-- Home greeting -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="greeting_night">Good night</string>
+    <string name="greeting_subtitle">Ready to download something today?</string>
+    <string name="greeting_desc">Download and manage your favorite media right on this device.</string>
+
+    <!-- Stats -->
+    <string name="stat_completed">Completed</string>
+    <string name="stat_active">Active</string>
+    <string name="stat_total_data">Total data</string>
+
+    <!-- Home -->
+    <string name="section_active_downloads">In progress</string>
+    <string name="section_history">Download History</string>
+    <string name="home_recent_downloads">Recently downloaded</string>
+    <string name="home_download_by_type">Download by type</string>
+    <string name="home_type_video">Video</string>
+    <string name="home_type_audio">Audio</string>
+    <string name="home_type_photo">Photo</string>
+    <string name="home_type_playlist">Playlist</string>
+    <string name="home_active_empty_title">No active downloads</string>
+    <string name="home_active_empty_desc">Link some media to start downloading. Press the blue button below.</string>
+    <string name="history_see_all">See all</string>
+    <string name="home_link_hint">Paste or type a media link</string>
+    <string name="home_paste">Paste</string>
+    <string name="home_quick_actions">Quick actions</string>
+    <string name="home_quick_history">History</string>
+    <string name="home_clipboard_empty">Clipboard is empty</string>
+    <string name="history_empty_title">No history yet</string>
+    <string name="history_empty_desc">Finished, failed, or cancelled downloads will appear here.</string>
+    <string name="history_subtitle">All your downloads, neatly organized.</string>
+    <string name="history_group_today">Today</string>
+    <string name="history_group_yesterday">Yesterday</string>
+    <string name="history_filter_failed">Failed</string>
+
+    <!-- Job stages -->
+    <string name="stage_queued">Queued</string>
+    <string name="stage_downloading">Downloading…</string>
+    <string name="stage_processing">Processing…</string>
+    <string name="stage_packaging">Packaging ZIP…</string>
+    <string name="stage_completed">Completed</string>
+    <string name="stage_failed">Failed</string>
+    <string name="stage_cancelled">Cancelled</string>
+    <string name="stage_paused">Paused</string>
+
+    <!-- Job card -->
+    <string name="job_pause">Pause</string>
+    <string name="job_resume">Resume</string>
+    <string name="job_cancel">Cancel</string>
+    <string name="job_open">Open</string>
+    <string name="job_share">Share</string>
+    <string name="job_item_progress">Item %1$d of %2$d</string>
+    <string name="job_bytes_progress">%1$s / %2$s</string>
+    <string name="job_speed">%1$s/s</string>
+    <string name="job_eta">About %1$s left</string>
+    <string name="job_speed_calculating">Calculating speed…</string>
+    <string name="job_cancel_confirm_title">Cancel download?</string>
+    <string name="job_cancel_confirm_desc">This download progress will be discarded and cannot be resumed.</string>
+    <string name="job_dismiss">Dismiss</string>
+    <string name="job_retry">Retry</string>
+    <string name="job_restored_paused">Restored — tap Resume to continue</string>
+    <string name="job_items_summary">%1$d/%2$d items done</string>
+    <string name="job_items_show">View items (%1$d)</string>
+    <string name="job_items_hide">Hide items</string>
+    <string name="job_items_failed_count">%1$d failed</string>
+    <string name="job_items_canceled_count">%1$d canceled</string>
+    <string name="job_item_untitled">Item %1$d</string>
+    <string name="job_item_percent">%1$d%%</string>
+    <string name="item_waiting">Waiting</string>
+    <string name="item_running">Downloading…</string>
+    <string name="item_processing">Processing…</string>
+    <string name="item_completed">Done</string>
+    <string name="item_failed">Failed</string>
+    <string name="item_canceled">Canceled</string>
+    <string name="item_cancel">Cancel this item</string>
+    <string name="pl_all_canceled">All items canceled</string>
+
+    <!-- History -->
+    <string name="history_title">Download History</string>
+    <string name="history_status_completed">Completed</string>
+    <string name="history_status_failed">Failed</string>
+    <string name="history_status_cancelled">Cancelled</string>
+    <string name="history_retry">Retry</string>
+    <string name="history_file_missing">File is no longer on the device</string>
+    <string name="history_clear_all">Clear all</string>
+    <string name="history_clear_confirm_title">Clear all history?</string>
+    <string name="history_clear_confirm_desc">All history entries will be removed. Downloaded files are not deleted.</string>
+    <string name="history_delete_confirm_title">Remove history entry?</string>
+    <string name="history_delete_confirm_desc">This entry will be removed from history. Downloaded files are not deleted.</string>
+    <string name="history_search_hint">Search title or filename…</string>
+    <string name="history_filter_all">All</string>
+    <string name="history_filter_video">Video</string>
+    <string name="history_filter_audio">Audio</string>
+    <string name="history_filter_photo">Photo</string>
+    <string name="history_filter_playlist">Playlist</string>
+    <string name="history_no_results_title">No results</string>
+    <string name="history_no_results_desc">Try another keyword or filter.</string>
+
+    <!-- Common -->
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_back">Back</string>
+    <string name="action_close">Close</string>
+    <string name="action_change">Change</string>
+
+    <!-- New download screen -->
+    <string name="new_download_title">Analyze Media</string>
+    <string name="new_download_subtitle">Inspect the media before choosing the output.</string>
+    <string name="download_preset_label">Preset</string>
+    <string name="download_preset_best">Best</string>
+    <string name="download_preset_audio">Audio</string>
+    <string name="download_preset_storage">Save storage</string>
+    <string name="download_preset_balanced">Balanced</string>
+    <string name="download_preset_storage_confirm_title">Use Save storage preset?</string>
+    <string name="download_preset_storage_confirm_desc">Video is limited to 480p without HD (audio-only uses 128 kbps). Lower quality, but smaller file size.</string>
+    <string name="download_preset_storage_confirm_action">Apply</string>
+    <string name="download_preset_balanced_note">Balanced preset: Turbo mode disabled for a lighter queue.</string>
+    <string name="url_hint">Media link (YouTube, TikTok, Instagram, X, etc.)</string>
+    <string name="action_paste">Paste from clipboard</string>
+    <string name="action_clear_link">Clear link</string>
+    <string name="action_analyze">Analyze</string>
+    <string name="action_download_now">Start download</string>
+    <string name="format_title">Output format</string>
+    <string name="quality_bitrate">Audio bitrate</string>
+    <string name="quality_resolution">Video resolution</string>
+    <string name="quality_bitrate_best">%1$d Kbps — Best</string>
+    <string name="quality_bitrate_value">%1$d Kbps</string>
+    <string name="quality_resolution_auto">Auto — best</string>
+    <string name="quality_resolution_value">%1$dp</string>
+    <string name="quality_hd_title">HD mode</string>
+    <string name="quality_hd_desc">Download the highest quality then convert to MP4.</string>
+    <string name="quality_photo_note">Photos are downloaded in full quality. Check ZIP to pack the playlist into a single archive.</string>
+    <string name="supported_platforms">YouTube • TikTok • Instagram • Twitter/X • Facebook • Vimeo • direct images</string>
+
+    <!-- Playlist -->
+    <string name="playlist_default_title">Playlist</string>
+    <string name="playlist_summary">%1$d items • %2$s</string>
+    <string name="playlist_selected_count">%1$d selected</string>
+    <string name="playlist_select_all">Select all</string>
+    <string name="playlist_unselect_all">Unselect all</string>
+    <string name="playlist_zip">ZIP</string>
+    <string name="playlist_need_selection">Select at least one playlist item to download.</string>
+    <string name="estimate_size">Estimated size ≈ %1$s</string>
+    <string name="estimate_total">Selected total ≈ %1$s</string>
+    <string name="estimate_short">≈ %1$s</string>
+
+    <!-- Music Player (BETA) -->
+    <string name="player_title">Music Player</string>
+    <string name="player_beta">BETA</string>
+    <string name="player_desc">Listen to your downloaded music.</string>
+    <string name="player_rescan">Rescan</string>
+    <string name="player_search_hint">Search title or artist…</string>
+    <string name="player_sort_name">Name</string>
+    <string name="player_sort_artist">Artist</string>
+    <string name="player_sort_recent">Recent</string>
+    <string name="player_tracks_count">%1$d songs</string>
+    <string name="player_loading">Loading music library…</string>
+    <string name="player_empty_title">No songs yet</string>
+    <string name="player_empty_desc">Download MP3/M4A audio or grant access to music files on the device.</string>
+    <string name="player_no_result_title">No matches</string>
+    <string name="player_no_result_desc">Try a different keyword or sort order.</string>
+    <string name="player_filter_favorites">Favorites</string>
+    <string name="player_favorite_add">Add to favorites</string>
+    <string name="player_favorite_remove">Remove from favorites</string>
+    <string name="player_no_favorites_title">No favorites yet</string>
+    <string name="player_no_favorites_desc">Tap the heart icon on a track to add it to favorites.</string>
+    <string name="player_scan_failed_title">Music scan failed</string>
+    <string name="player_scan_failed_desc">Try rescanning. If it keeps failing, check storage permission.</string>
+    <string name="player_open_settings">Open app settings</string>
+    <string name="player_need_permission_title">Music access needed</string>
+    <string name="player_need_permission_desc">Allow access to audio files so every song on the device is detected. Downloaded files still appear automatically without this permission.</string>
+    <string name="player_library_count">%1$d songs detected</string>
+    <string name="player_grant_access">Grant access</string>
+    <string name="player_unknown_artist">Unknown artist</string>
+    <string name="player_own_badge">Download</string>
+    <string name="player_now_playing">Now playing</string>
+    <string name="player_preparing">Preparing audio…</string>
+    <string name="player_play">Play</string>
+    <string name="player_pause">Pause</string>
+    <string name="player_next">Next</string>
+    <string name="player_previous">Previous</string>
+    <string name="player_shuffle">Shuffle</string>
+    <string name="player_repeat_off">Repeat: off</string>
+    <string name="player_repeat_all">Repeat: all</string>
+    <string name="player_repeat_one">Repeat: one</string>
+    <string name="player_error_generic">This file cannot be played.</string>
+    <string name="player_error_unsupported">This file format is not supported by the player.</string>
+
+    <!-- Equalizer -->
+    <string name="eq_title">Equalizer</string>
+    <string name="eq_preset">Preset</string>
+    <string name="eq_reset">Reset to default</string>
+    <string name="eq_unavailable">Equalizer is not available on this device. Music still plays normally.</string>
+    <string name="eq_no_bands">Frequency bands could not be read from the device.</string>
+
+    <!-- Media types and labels -->
+    <string name="media_type_video">Video</string>
+    <string name="media_type_audio">Audio</string>
+    <string name="media_type_photo">Photo</string>
+    <string name="media_type_playlist">Playlist</string>
+    <string name="badge_item_count">%1$d items</string>
+    <string name="media_preview_ready">Ready to download</string>
+    <string name="format_tag_photo">Photo</string>
+    <string name="quality_label_auto_hd">HD • Auto</string>
+    <string name="quality_label_auto">Auto</string>
+    <string name="quality_label_kbps">%1$d Kbps</string>
+    <string name="quality_label_height">%1$dp</string>
+    <string name="quality_label_full">Full quality</string>
+
+    <!-- Results -->
+    <string name="result_saved_to">Saved to %1$s</string>
+    <string name="result_failed_items">%1$d items failed to download and were skipped.</string>
+    <string name="result_open_failed">No app can open this file. The file is saved in the download folder.</string>
+    <string name="result_share_failed">Unable to share this file.</string>
+    <string name="result_share_chooser">Share file</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_download_section">Downloads</string>
+    <string name="settings_turbo_title">Turbo Download</string>
+    <string name="settings_turbo_desc">Maximum speed: more parallel connections. Uses more battery and data.</string>
+    <string name="settings_storage_section">Storage</string>
+    <string name="settings_history_section">History &amp; Log</string>
+    <string name="settings_history_title">Download History</string>
+    <string name="settings_history_desc">See all download results.</string>
+    <string name="settings_log_title">App Log</string>
+    <string name="settings_log_desc">Activity and error notes for debugging.</string>
+    <string name="settings_folder_title">Download Folder</string>
+    <string name="settings_folder_current">Current folder</string>
+    <string name="settings_folder_default">Download/Downloader (default)</string>
+    <string name="settings_folder_pick">Choose Folder</string>
+    <string name="settings_folder_change">Change Folder</string>
+    <string name="settings_folder_picked">Folder selected: %1$s</string>
+    <string name="settings_folder_no_write">This folder does not grant write access. Please pick another folder.</string>
+    <string name="settings_folder_access_lost">Access to the selected folder was lost. Please pick the folder again.</string>
+    <string name="settings_folder_reset_title">Restore Default Folder</string>
+    <string name="settings_folder_reset_desc">Save downloads back to Download/Downloader.</string>
+    <string name="settings_folder_reset_action">Reset</string>
+    <string name="settings_folder_reset_done">Folder restored to default.</string>
+    <string name="settings_language_section">Language</string>
+    <string name="settings_language_title">App Language</string>
+    <string name="settings_language_dialog_title">Choose Language</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="language_english">English</string>
+    <string name="settings_cache_section">Cache</string>
+    <string name="settings_cache_title">Clear Cache</string>
+    <string name="settings_cache_desc">Removes temporary files to free up storage space.</string>
+    <string name="settings_cache_size">Current cache size: %1$s</string>
+    <string name="settings_cache_calculating">Calculating cache size…</string>
+    <string name="settings_cache_confirm_title">Clear cache?</string>
+    <string name="settings_cache_confirm_desc">Temporary files will be removed. Downloaded files, history, and settings are untouched.</string>
+    <string name="settings_cache_confirm_action">Clear Cache</string>
+    <string name="settings_cache_freed">%1$s freed.</string>
+    <string name="settings_cache_nothing">Nothing to clear.</string>
+    <string name="settings_cache_busy">Active download cache was skipped.</string>
+    <string name="settings_about_section">App</string>
+    <string name="settings_about_title">About</string>
+    <string name="settings_debug_title">Debug</string>
+    <string name="settings_debug_desc">Device, engine, and storage info.</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_version">Version %1$s (build %2$s)</string>
+    <string name="about_version_short">v%1$s</string>
+    <string name="about_developer_label">Developer</string>
+    <string name="about_developer_value">DappKunzXD</string>
+    <string name="about_build_info">App Build Information</string>
+    <string name="about_language">Language</string>
+    <string name="about_version_label">Version :</string>
+    <string name="about_sdk_range">sdk%1$d - %2$d</string>
+    <string name="about_components_title">Components &amp; Licenses</string>
+    <string name="about_components_list">yt-dlp • FFmpeg • Media3 • Jetpack Compose</string>
+    <string name="about_licenses_note">Licenses follow the dependency and build configuration.</string>
+    <string name="about_source_changelog">Source &amp; changelog</string>
+    <string name="about_github_repo">GitHub Repository</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Downloads</string>
+    <string name="notification_channel_desc">Progress of running downloads</string>
+    <string name="notification_title_single">Downloading: %1$s</string>
+    <string name="notification_title_multi">Downloading %1$d items</string>
+    <string name="notification_line">%1$s — %2$s</string>
+    <string name="notification_progress_text">%1$d%% • %2$s</string>
+    <string name="notification_progress_text_nospeed">%1$d%%</string>
+    <string name="notification_preparing">Preparing download…</string>
+    <string name="notification_action_cancel">Cancel</string>
+
+    <!-- Engine -->
+    <string name="engine_preparing">Preparing engine…</string>
+    <string name="engine_ready">Ready • Serverless</string>
+    <string name="engine_failed">Engine failed</string>
+    <string name="engine_failed_banner">The download engine failed to initialize: %1$s</string>
+
+    <!-- Errors (core) -->
+    <string name="err_unknown">An unknown error occurred.</string>
+    <string name="err_job_timeout">The download exceeded the time limit and was stopped.</string>
+    <string name="err_empty_url">Empty link. Paste a media link first.</string>
+    <string name="err_invalid_url">Invalid link format.</string>
+    <string name="err_http_only">Only http/https links are supported.</string>
+    <string name="err_no_domain">The link has no valid domain.</string>
+    <string name="err_spotify">Spotify is not supported because its audio is DRM-protected. Use YouTube, SoundCloud, or another supported platform.</string>
+    <string name="err_drm_platform">%1$s is not supported for direct downloads due to DRM protection on its audio.</string>
+    <string name="err_image_gallery">Gallery/profile photo links cannot be processed directly on-device. Use a direct image link (.jpg/.png/.webp) or a video/audio link.</string>
+    <string name="err_extractor_failed">The extractor does not recognize this link.</string>
+    <string name="err_metadata_unreadable">Metadata from this link could not be read.</string>
+    <string name="err_403">The source server denied the download (HTTP 403). Usually the yt-dlp engine needs an update — reopen the app so it updates automatically, then try again.</string>
+    <string name="err_404">Content not found (404). The link may be removed or wrong.</string>
+    <string name="err_429">Too many requests (429). Wait a moment and try again.</string>
+    <string name="err_unavailable">This content is unavailable (removed, private, or restricted).</string>
+    <string name="err_age_restricted">This content is age-restricted and requires sign-in.</string>
+    <string name="err_region">This content is blocked in your region.</string>
+    <string name="err_signin">This content requires sign-in. Use another public link.</string>
+    <string name="err_unsupported_url">This link is not supported. Use YouTube, TikTok, SoundCloud, or another supported platform.</string>
+    <string name="err_dns">Unable to reach the source server. Check your internet connection and try again.</string>
+    <string name="err_timeout">Connection to the source server timed out. Check your network and try again.</string>
+    <string name="err_storage_failed">Storage failed: %1$s</string>
+    <string name="err_storage_low">Not enough storage. %1$s available, about %2$s needed. Delete files or pick another folder.</string>
+    <string name="err_photo_invalid">The downloaded image file is not valid.</string>
+    <string name="err_file_missing">Result file was not found for saving.</string>
+    <string name="err_audio_missing">Downloaded audio file was not found.</string>
+    <string name="err_video_missing">Downloaded video file was not found.</string>
+    <string name="err_ffmpeg_audio">Audio conversion with FFmpeg failed.</string>
+    <string name="err_ffmpeg_video">Video processing with FFmpeg failed.</string>
+    <string name="err_ffmpeg_missing">The FFmpeg engine was not found in the app. Reopen the app and try again.</string>
+    <string name="err_ffmpeg_start">Failed to run FFmpeg: %1$s</string>
+    <string name="err_ffmpeg_crashed">FFmpeg stopped abnormally: %1$s</string>
+    <string name="err_format_unsupported">Unsupported format: %1$s</string>
+    <string name="err_playlist_empty_selection">No playlist item selected.</string>
+    <string name="err_playlist_all_failed">All playlist items failed to download. %1$s</string>
+    <string name="err_photo_not_direct">This link is not a direct image, so it cannot be downloaded without the gallery-dl engine.</string>
+    <string name="err_photo_download">Failed to download the image from this link.</string>
+    <string name="err_photo_empty">The downloaded image is empty or corrupt.</string>
+    <string name="err_download_generic">Download failed.</string>
+    <string name="err_url_empty">Empty link. Paste a media link first.</string>
+
+    <!-- Pipeline messages -->
+    <string name="pl_preparing">Preparing download…</string>
+    <string name="pl_fetch_metadata">Fetching metadata…</string>
+    <string name="pl_download_audio">Downloading audio…</string>
+    <string name="pl_download_video">Downloading video…</string>
+    <string name="pl_download_photo">Downloading photo…</string>
+    <string name="pl_convert_audio">Converting with FFmpeg…</string>
+    <string name="pl_process_video">Processing video with FFmpeg…</string>
+    <string name="pl_embed_cover">Writing audio tags…</string>
+    <string name="pl_saving">Saving file…</string>
+    <string name="pl_zip">Packaging ZIP…</string>
+    <string name="pl_playlist_downloading">Downloading %1$d playlist items%2$s…</string>
+    <string name="pl_photopost">Downloading %1$d photos…</string>
+
+    <!-- Log & Debug -->
+    <string name="log_title">App Log</string>
+    <string name="log_clear">Clear</string>
+    <string name="log_empty">No log entries yet.</string>
+    <string name="debug_copy_info">Copy info</string>
+    <string name="debug_open_log">Open Log</string>
+    <string name="debug_copied">Debug info copied.</string>
+    <string name="debug_app">App</string>
+    <string name="debug_device">Device</string>
+    <string name="debug_android">Android</string>
+    <string name="debug_engine">Engine</string>
+    <string name="debug_folder">Download folder</string>
+    <string name="debug_turbo">Turbo</string>
+    <string name="pl_playlist_cap"> (limited to %1$d of %2$d items per queue)</string>
+    <string name="pl_item_url_missing">item link not found</string>
+    <string name="pl_item_failed">download failed</string>
+    <string name="pl_resume">Resuming download…</string>
+
+    <!-- Snackbar messages -->
+    <string name="snackbar_started">%1$s added to the download queue.</string>
+    <string name="snackbar_completed">%1$s finished downloading.</string>
+    <string name="snackbar_failed">%1$s failed: %2$s</string>
+    <string name="snackbar_cancelled">%1$s was cancelled.</string>
+    <string name="snackbar_duplicate">A download for this link is already active.</string>
+    <string name="snackbar_clipboard_empty">No link found in the clipboard.</string>
+    <!-- App updates -->
+    <string name="settings_update_section">Updates</string>
+    <string name="settings_update_title">App Updates</string>
+    <string name="settings_update_desc">Check the latest release from GitHub.</string>
+    <string name="upd_title">App Updates</string>
+    <string name="upd_installed">Installed: %1$s</string>
+    <string name="upd_last_checked">Last checked: %1$s</string>
+    <string name="upd_never_checked">Never checked</string>
+    <string name="upd_check">Check for Updates</string>
+    <string name="upd_retry">Try Again</string>
+    <string name="upd_checking">Checking the latest release…</string>
+    <string name="upd_idle">Check for updates to see the latest release from GitHub.</string>
+    <string name="upd_no_release">No release has been published yet.</string>
+    <string name="upd_up_to_date">The app is already on the latest version.</string>
+    <string name="upd_uncomparable">The release version cannot be compared automatically. Open the release page for details.</string>
+    <string name="upd_latest">Latest version: %1$s</string>
+    <string name="upd_release_date">Released: %1$s</string>
+    <string name="upd_available">Update available</string>
+    <string name="upd_no_apk">This release has no APK matching this device.</string>
+    <string name="upd_download">Download (%1$s)</string>
+    <string name="upd_download_simple">Download</string>
+    <string name="upd_downloading">Downloading… %1$d%%</string>
+    <string name="upd_downloading_unknown">Downloading… %1$s</string>
+    <string name="upd_download_cancel">Cancel Download</string>
+    <string name="upd_downloaded_ready">Download complete and verified. Continue to install.</string>
+    <string name="upd_install">Install</string>
+    <string name="upd_notes">Release notes</string>
+    <string name="upd_open_release">Open the release page on GitHub</string>
+    <string name="upd_permission_title">Install permission required</string>
+    <string name="upd_permission_desc">Enable "Allow from this source" so the app can open the package installer.</string>
+    <string name="upd_permission_action">Open Settings</string>
+    <string name="upd_error_network">Could not reach GitHub. Check your connection and try again.</string>
+    <string name="upd_error_rate">GitHub rate limit reached. Try again shortly.</string>
+    <string name="upd_error_server">GitHub returned an error. Try again later.</string>
+    <string name="upd_error_malformed">The GitHub response could not be read.</string>
+    <string name="upd_error_retry_hint">Something went wrong while checking for updates.</string>
+    <string name="upd_error_download">The download failed.</string>
+    <string name="upd_error_install">Could not open the package installer.</string>
+    <string name="upd_validation_package">This APK is not for this app.</string>
+    <string name="upd_validation_signature">The APK signature does not match the installed app.</string>
+    <string name="upd_validation_unreadable">The APK file could not be read.</string>
+
+    <!-- Donation -->
+    <string name="settings_donation_section">Support</string>
+    <string name="settings_donation_title">Donate</string>
+    <string name="settings_donation_desc">Support the development of Downloader</string>
+    <string name="donation_title">Donate</string>
+    <string name="donation_subtitle">The Saweria page opens inside the app.</string>
+    <string name="donation_reload">Reload</string>
+    <string name="donation_error_title">The page could not be loaded</string>
+    <string name="donation_error_desc">Check your internet connection, then reload the page.</string>
+    <string name="donation_ssl_blocked">The connection to this page is not secure, so loading was cancelled.</string>
+    <string name="donation_blocked_malformed">This link could not be recognised.</string>
+    <string name="donation_blocked_scheme">This type of link is not allowed.</string>
+    <string name="donation_blocked_https">Only HTTPS links are allowed.</string>
+    <string name="donation_blocked_local">Links to the local network are blocked.</string>
+    <string name="donation_external_title">Open outside the app?</string>
+    <string name="donation_external_desc">This link leaves the Saweria page and will be opened by a browser or another app.</string>
+    <string name="donation_external_browser">Open browser</string>
+    <string name="donation_external_app">Open app</string>
+    <string name="donation_external_missing">No app on this device can open that link.</string>
+
+    <!-- Music Library &amp; Now Playing -->
+    <string name="player_cat_songs">Songs</string>
+    <string name="player_cat_albums">Albums</string>
+    <string name="player_cat_artists">Artists</string>
+    <string name="player_cat_folders">Folders</string>
+    <string name="player_cat_favorites">Favorites</string>
+    <string name="player_cat_playlists">Playlists</string>
+    <string name="player_sort_album">Album</string>
+    <string name="player_play_all">Play all</string>
+    <string name="player_shuffle_all">Shuffle all</string>
+    <string name="player_unknown_album">Unknown album</string>
+    <string name="player_unknown_folder">Unknown folder</string>
+    <string name="player_more_actions">More options</string>
+    <string name="player_play_now">Play now</string>
+    <string name="player_play_next">Play next</string>
+    <string name="player_add_queue">Add to queue</string>
+    <string name="player_queued">Added to the queue.</string>
+    <string name="player_add_playlist">Add to playlist</string>
+    <string name="player_new_playlist">New playlist</string>
+    <string name="player_playlist_name">Playlist name</string>
+    <string name="player_playlist_create">Create</string>
+    <string name="player_playlist_rename">Rename</string>
+    <string name="player_playlist_delete">Delete playlist</string>
+    <string name="player_playlist_delete_confirm">Delete playlist %1$s? The songs on the device are not removed.</string>
+    <string name="player_playlist_created">Playlist %1$s created.</string>
+    <string name="player_repeat">Repeat</string>
+    <string name="player_playlist_empty_title">This playlist is empty</string>
+    <string name="player_playlist_empty_desc">Add songs from the three-dot menu on a track.</string>
+    <string name="player_playlists_empty_title">No playlists yet</string>
+    <string name="player_playlists_empty_desc">Create a playlist to organise the songs you like.</string>
+    <string name="player_playlist_added">Added to playlist %1$s.</string>
+    <string name="player_playlist_exists">Already in playlist %1$s.</string>
+    <string name="player_playlist_removed">Removed from the playlist.</string>
+    <string name="player_playlist_missing">%1$d songs are no longer available and were skipped.</string>
+    <string name="player_remove_from_playlist">Remove from playlist</string>
+    <string name="player_queue_title">Queue</string>
+    <string name="player_queue_empty">The queue is empty.</string>
+    <string name="player_queue_count">%1$d tracks in the queue</string>
+    <string name="player_queue_remove">Remove from queue</string>
+    <string name="player_open_queue">Queue</string>
+    <string name="player_albums_count">%1$d albums</string>
+    <string name="player_artists_count">%1$d artists</string>
+    <string name="player_folders_count">%1$d folders</string>
+    <string name="player_playlists_count">%1$d playlists</string>
+    <string name="player_missing_file">File is missing</string>
+    <string name="player_group_tracks">%1$d tracks</string>
+</resources>

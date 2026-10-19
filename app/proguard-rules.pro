@@ -1,0 +1,8 @@
+-keep class com.yausername.** { *; }
+-keep class com.fasterxml.jackson.** { *; }
+-keep class org.apache.commons.compress.** { *; }
+-keep class org.apache.commons.io.** { *; }
+-dontwarn com.yausername.**
+-dontwarn com.fasterxml.jackson.**
+-dontwarn org.apache.commons.**
+-dontwarn org.slf4j.**

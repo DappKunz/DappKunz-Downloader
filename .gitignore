@@ -1,0 +1,14 @@
+# Build output and caches
+.gradle/
+.kotlin/
+**/build/
+
+# Local configuration and signing secrets
+local.properties
+keystore.properties
+*.jks
+*.keystore
+
+# Logs
+*.log
+replay_pid*.log
