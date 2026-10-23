@@ -12,15 +12,15 @@ import okhttp3.Request
 object UpdateChecker {
 
     const val RELEASE_API =
-        "https://api.github.com/repos/xdntenderman/DappKunzXD-Downloader/releases/latest"
+        "https://api.github.com/repos/DappKunz/DappKunz-Downloader/releases/latest"
 
     /** Halaman utama repository (tombol "GitHub Repository" di layar Tentang). */
     const val REPO_PAGE =
-        "https://github.com/xdntenderman/DappKunzXD-Downloader"
+        "https://github.com/DappKunz/DappKunz-Downloader"
 
     const val RELEASES_PAGE =
-        "https://github.com/xdntenderman/DappKunzXD-Downloader/releases"
-    const val USER_AGENT = "DappKunzXD-Downloader"
+        "https://github.com/DappKunz/DappKunz-Downloader/releases"
+    const val USER_AGENT = "DappKunz-Downloader"
 
     sealed interface Result {
         data class Release(val release: GithubRelease, val asset: GithubAsset?) : Result

@@ -32,7 +32,6 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -66,6 +65,7 @@ import com.downloader.app.core.service.JobController
 import com.downloader.app.core.util.Formatters
 import com.downloader.app.ui.theme.DownloaderColors
 import com.downloader.app.ui.theme.DownloaderRadius
+import com.downloader.app.ui.theme.DownloaderText
 
 @Composable
 fun JobCard(
@@ -250,27 +250,44 @@ fun JobCard(
         }
     }
 
-    if (confirmCancel) {
-        AlertDialog(
-            onDismissRequest = { confirmCancel = false },
-            title = { Text(DownloaderApp.str(R.string.job_cancel_confirm_title)) },
-            text = { Text(DownloaderApp.str(R.string.job_cancel_confirm_desc)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        confirmCancel = false
-                        onCancel()
-                    },
-                ) {
-                    Text(DownloaderApp.str(R.string.job_cancel), color = DownloaderColors.Danger)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { confirmCancel = false }) {
-                    Text(DownloaderApp.str(R.string.action_close))
-                }
-            },
+    MotionDialog(
+        visible = confirmCancel,
+        onDismiss = { confirmCancel = false },
+    ) {
+        Text(
+            text = DownloaderApp.str(R.string.job_cancel_confirm_title),
+            style = DownloaderText.dialogTitle,
+            color = DownloaderColors.TextPrimary,
         )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = DownloaderApp.str(R.string.job_cancel_confirm_desc),
+            style = DownloaderText.body,
+            color = DownloaderColors.TextSecondary,
+        )
+        Spacer(Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TextButton(onClick = { confirmCancel = false }) {
+                Text(DownloaderApp.str(R.string.action_close))
+            }
+            Spacer(Modifier.width(4.dp))
+            TextButton(
+                onClick = {
+                    confirmCancel = false
+                    onCancel()
+                },
+            ) {
+                Text(
+                    text = DownloaderApp.str(R.string.job_cancel),
+                    color = DownloaderColors.Danger,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
     }
 }
 

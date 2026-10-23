@@ -2,53 +2,57 @@ package com.downloader.app.ui.settings
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.pm.ApplicationInfo
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.BugReport
-import androidx.compose.material.icons.rounded.CleaningServices
-import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Language
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Rocket
 import androidx.compose.material.icons.rounded.SettingsBackupRestore
 import androidx.compose.material.icons.rounded.SystemUpdate
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,45 +60,49 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.downloader.app.DownloaderApp
 import com.downloader.app.R
+import com.downloader.app.core.storage.AccentPalette
 import com.downloader.app.core.storage.OutputPublisher
-import com.downloader.app.core.util.Formatters
+import com.downloader.app.core.storage.ThemeMode
 import com.downloader.app.core.util.LocaleHelper
+import com.downloader.app.ui.components.entrance
+import com.downloader.app.ui.components.pressScale
 import com.downloader.app.ui.theme.DownloaderColors
-import com.downloader.app.ui.theme.DownloaderDimens
-import com.downloader.app.ui.theme.DownloaderRadius
 import com.downloader.app.ui.theme.DownloaderText
 
 @Composable
 fun SettingsScreen(
     onAbout: () -> Unit,
     onUpdate: () -> Unit,
-    onHistory: () -> Unit,
-    onLog: () -> Unit,
     onDebug: () -> Unit,
     onDonate: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = viewModel(),
 ) {
     val context = LocalContext.current
+    val debuggable = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
     val language by viewModel.language.collectAsStateWithLifecycle()
     val folderUri by viewModel.folderUri.collectAsStateWithLifecycle()
     val turbo by viewModel.turbo.collectAsStateWithLifecycle()
+    val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+    val accentPalette by viewModel.accentPalette.collectAsStateWithLifecycle()
+    val customAccentHex by viewModel.customAccentHex.collectAsStateWithLifecycle()
 
-    var languageDialog by remember { mutableStateOf(false) }
-    var clearDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        viewModel.refreshCacheSize()
-    }
+    // Sengaja bukan rememberSaveable: overlay harus tertutup setelah recreate
+    // (pergantian bahasa) dan tidak terbuka sendiri saat rotasi.
+    var languageSheetOpen by remember { mutableStateOf(false) }
+    var appearanceOpen by remember { mutableStateOf(false) }
 
     val pickFolder = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocumentTree(),
@@ -125,21 +133,42 @@ fun SettingsScreen(
         }
     }
 
+    val resetFolder = {
+        viewModel.setFolderUri(null)
+        Toast.makeText(
+            context,
+            DownloaderApp.str(R.string.settings_folder_reset_done),
+            Toast.LENGTH_SHORT,
+        ).show()
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp)
-            .padding(top = 14.dp, bottom = 118.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+            .padding(top = 18.dp, bottom = 118.dp),
     ) {
         Text(
             text = DownloaderApp.str(R.string.settings_title),
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
+            color = DownloaderColors.TextPrimary,
+            modifier = Modifier.entrance(0),
         )
+        Spacer(Modifier.height(2.dp))
+        Text(
+            text = DownloaderApp.str(R.string.settings_subtitle),
+            style = DownloaderText.meta,
+            color = DownloaderColors.TextSecondary,
+            modifier = Modifier.entrance(0, offsetY = 10),
+        )
+        Spacer(Modifier.height(4.dp))
 
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_download_section)) {
+        SettingsSection(
+            title = DownloaderApp.str(R.string.settings_download_section),
+            modifier = Modifier.entrance(1),
+        ) {
             SettingSwitchRow(
                 icon = Icons.Rounded.Rocket,
                 title = DownloaderApp.str(R.string.settings_turbo_title),
@@ -149,226 +178,135 @@ fun SettingsScreen(
             )
         }
 
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_storage_section)) {
+        SettingsSection(
+            title = DownloaderApp.str(R.string.settings_storage_section),
+            modifier = Modifier.entrance(2),
+        ) {
             SettingRow(
                 icon = Icons.Rounded.Folder,
                 title = DownloaderApp.str(R.string.settings_folder_title),
                 value = folderUri?.let {
                     OutputPublisher.describeTreeLocation(context, Uri.parse(it))
                 } ?: DownloaderApp.str(R.string.settings_folder_default),
-                actionLabel = DownloaderApp.str(R.string.settings_folder_pick),
-                onAction = { pickFolder.launch(null) },
+                onClick = { pickFolder.launch(null) },
+                trailing = if (folderUri != null) {
+                    {
+                        IconButton(
+                            onClick = resetFolder,
+                            modifier = Modifier.size(36.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.SettingsBackupRestore,
+                                contentDescription = DownloaderApp.str(R.string.settings_folder_reset_title),
+                                tint = DownloaderColors.TextMuted,
+                                modifier = Modifier.size(19.dp),
+                            )
+                        }
+                    }
+                } else {
+                    null
+                },
             )
-            if (folderUri != null) {
-                SettingRow(
-                    icon = Icons.Rounded.SettingsBackupRestore,
-                    title = DownloaderApp.str(R.string.settings_folder_reset_title),
-                    value = DownloaderApp.str(R.string.settings_folder_reset_desc),
-                    actionLabel = DownloaderApp.str(R.string.settings_folder_reset_action),
-                    onAction = {
-                        viewModel.setFolderUri(null)
-                        Toast.makeText(
-                            context,
-                            DownloaderApp.str(R.string.settings_folder_reset_done),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    },
-                )
-            }
-        }
-
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_history_section)) {
-            SettingRow(
-                icon = Icons.Rounded.History,
-                title = DownloaderApp.str(R.string.settings_history_title),
-                value = DownloaderApp.str(R.string.settings_history_desc),
-                actionLabel = null,
-                onAction = onHistory,
-                wholeRowClickable = true,
-            )
-            SettingRow(
-                icon = Icons.Rounded.Description,
-                title = DownloaderApp.str(R.string.settings_log_title),
-                value = DownloaderApp.str(R.string.settings_log_desc),
-                actionLabel = null,
-                onAction = onLog,
-                wholeRowClickable = true,
-            )
-        }
-
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_language_section)) {
             SettingRow(
                 icon = Icons.Rounded.Language,
                 title = DownloaderApp.str(R.string.settings_language_title),
                 value = languageLabel(language),
-                actionLabel = DownloaderApp.str(R.string.action_change),
-                onAction = { languageDialog = true },
+                onClick = { languageSheetOpen = true },
             )
-        }
-
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_cache_section)) {
             SettingRow(
-                icon = Icons.Rounded.CleaningServices,
-                title = DownloaderApp.str(R.string.settings_cache_title),
-                value = when {
-                    viewModel.cacheBusy -> DownloaderApp.str(R.string.settings_cache_calculating)
-                    viewModel.cacheSizeBytes != null ->
-                        DownloaderApp.str(R.string.settings_cache_size, Formatters.bytes(viewModel.cacheSizeBytes ?: 0))
-
-                    else -> DownloaderApp.str(R.string.settings_cache_desc)
-                },
-                actionLabel = DownloaderApp.str(R.string.settings_cache_confirm_action),
-                onAction = { clearDialog = true },
+                icon = Icons.Rounded.Palette,
+                title = DownloaderApp.str(R.string.settings_appearance_title),
+                value = appearanceSummary(themeMode, accentPalette, customAccentHex),
+                onClick = { appearanceOpen = true },
             )
         }
 
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_update_section)) {
+        SettingsSection(
+            title = DownloaderApp.str(R.string.settings_donation_section),
+            modifier = Modifier.entrance(3),
+        ) {
+            SettingRow(
+                icon = Icons.Rounded.Favorite,
+                iconTint = DownloaderColors.Warning,
+                title = DownloaderApp.str(R.string.settings_donation_title),
+                value = DownloaderApp.str(R.string.settings_donation_desc),
+                onClick = onDonate,
+            )
+        }
+
+        SettingsSection(
+            title = DownloaderApp.str(R.string.settings_about_section),
+            modifier = Modifier.entrance(4),
+        ) {
             SettingRow(
                 icon = Icons.Rounded.SystemUpdate,
                 title = DownloaderApp.str(R.string.settings_update_title),
                 value = DownloaderApp.str(R.string.settings_update_desc),
-                actionLabel = null,
-                onAction = onUpdate,
-                wholeRowClickable = true,
+                onClick = onUpdate,
             )
-        }
-
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_donation_section)) {
-            SettingRow(
-                icon = Icons.Rounded.Favorite,
-                title = DownloaderApp.str(R.string.settings_donation_title),
-                value = DownloaderApp.str(R.string.settings_donation_desc),
-                actionLabel = null,
-                onAction = onDonate,
-                wholeRowClickable = true,
-            )
-        }
-
-        SettingsGroup(title = DownloaderApp.str(R.string.settings_about_section)) {
             SettingRow(
                 icon = Icons.Rounded.Info,
                 title = DownloaderApp.str(R.string.settings_about_title),
-                value = appVersionLabel(context),
-                actionLabel = null,
-                onAction = onAbout,
-                wholeRowClickable = true,
+                value = DownloaderApp.str(R.string.settings_about_subtitle),
+                onClick = onAbout,
             )
-            SettingRow(
-                icon = Icons.Rounded.BugReport,
+        }
+
+        if (debuggable) {
+            SettingsSection(
                 title = DownloaderApp.str(R.string.settings_debug_title),
-                value = DownloaderApp.str(R.string.settings_debug_desc),
-                actionLabel = null,
-                onAction = onDebug,
-                wholeRowClickable = true,
-            )
+                modifier = Modifier.entrance(5),
+            ) {
+                SettingRow(
+                    icon = Icons.Rounded.BugReport,
+                    title = DownloaderApp.str(R.string.settings_debug_title),
+                    value = DownloaderApp.str(R.string.settings_debug_desc),
+                    onClick = onDebug,
+                )
+            }
         }
     }
 
-    if (languageDialog) {
-        AlertDialog(
-            onDismissRequest = { languageDialog = false },
-            title = { Text(DownloaderApp.str(R.string.settings_language_dialog_title)) },
-            text = {
-                Column {
-                    LanguageOption(
-                        label = DownloaderApp.str(R.string.language_indonesian),
-                        selected = language == LocaleHelper.LANG_INDONESIAN,
-                        onClick = {
-                            languageDialog = false
-                            applyLanguage(context, viewModel, LocaleHelper.LANG_INDONESIAN)
-                        },
-                    )
-                    LanguageOption(
-                        label = DownloaderApp.str(R.string.language_english),
-                        selected = language == LocaleHelper.LANG_ENGLISH,
-                        onClick = {
-                            languageDialog = false
-                            applyLanguage(context, viewModel, LocaleHelper.LANG_ENGLISH)
-                        },
-                    )
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { languageDialog = false }) {
-                    Text(DownloaderApp.str(R.string.action_close))
-                }
+    if (languageSheetOpen) {
+        LanguageSheet(
+            currentLanguage = language,
+            onDismiss = { languageSheetOpen = false },
+            onApply = { tag ->
+                languageSheetOpen = false
+                applyLanguage(context, viewModel, tag)
             },
         )
     }
 
-    if (clearDialog) {
-        AlertDialog(
-            onDismissRequest = { clearDialog = false },
-            title = { Text(DownloaderApp.str(R.string.settings_cache_confirm_title)) },
-            text = { Text(DownloaderApp.str(R.string.settings_cache_confirm_desc)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        clearDialog = false
-                        val jobsActive = com.downloader.app.core.util.CacheManager.activeJobIds().isNotEmpty()
-                        viewModel.clearCache { freed ->
-                            val message = when {
-                                jobsActive -> DownloaderApp.str(R.string.settings_cache_busy)
-                                freed > 0 -> DownloaderApp.str(R.string.settings_cache_freed, Formatters.bytes(freed))
-                                else -> DownloaderApp.str(R.string.settings_cache_nothing)
-                            }
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                ) {
-                    Text(DownloaderApp.str(R.string.settings_cache_confirm_action))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { clearDialog = false }) {
-                    Text(DownloaderApp.str(R.string.action_cancel))
-                }
-            },
+    if (appearanceOpen) {
+        AppearanceSheet(
+            viewModel = viewModel,
+            onDismiss = { appearanceOpen = false },
         )
     }
-}
-
-private fun applyLanguage(context: android.content.Context, viewModel: SettingsViewModel, tag: String) {
-    if (viewModel.language.value == tag) return
-    viewModel.setLanguage(tag)
-    (context as? Activity)?.recreate()
-}
-
-private fun languageLabel(tag: String): String = when (tag) {
-    LocaleHelper.LANG_ENGLISH -> DownloaderApp.str(R.string.language_english)
-    else -> DownloaderApp.str(R.string.language_indonesian)
-}
-
-private fun appVersionLabel(context: android.content.Context): String = try {
-    val info = context.packageManager.getPackageInfo(context.packageName, 0)
-    val code = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-        info.longVersionCode
-    } else {
-        @Suppress("DEPRECATION")
-        info.versionCode.toLong()
-    }
-    DownloaderApp.str(R.string.about_version, info.versionName ?: "-", code.toString())
-} catch (_: PackageManager.NameNotFoundException) {
-    "-"
 }
 
 @Composable
-private fun SettingsGroup(title: String, content: @Composable () -> Unit) {
-    Column {
+private fun SettingsSection(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 18.dp),
+    ) {
         Text(
             text = title,
-            style = DownloaderText.sectionTitleSm,
-            color = DownloaderColors.TextPrimary,
-            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp),
+            style = DownloaderText.groupTitle,
+            color = DownloaderColors.TextMuted,
+            modifier = Modifier.padding(start = 2.dp, bottom = 8.dp),
         )
-        Card(
-            shape = RoundedCornerShape(DownloaderRadius.md),
-            colors = CardDefaults.cardColors(containerColor = DownloaderColors.Surface),
-            border = BorderStroke(1.dp, DownloaderColors.Border),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            content()
-        }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            content = content,
+        )
     }
 }
 
@@ -377,65 +315,64 @@ private fun SettingRow(
     icon: ImageVector,
     title: String,
     value: String,
-    actionLabel: String?,
-    onAction: () -> Unit,
-    wholeRowClickable: Boolean = false,
+    onClick: () -> Unit,
+    iconTint: Color = DownloaderColors.Primary,
+    trailing: (@Composable () -> Unit)? = null,
 ) {
+    val shape = RoundedCornerShape(14.dp)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(
-                if (wholeRowClickable) {
-                    Modifier.clickable(onClick = onAction)
-                } else {
-                    Modifier
-                },
-            )
-            .padding(horizontal = 14.dp, vertical = 10.dp),
+            .height(52.dp)
+            .clip(shape)
+            .background(DownloaderColors.Surface)
+            .border(1.dp, DownloaderColors.Border, shape)
+            .clickable(onClickLabel = title, onClick = onClick)
+            .pressScale(scaleDown = 0.985f)
+            .padding(horizontal = 9.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            modifier = Modifier
-                .size(DownloaderDimens.iconTileMd)
-                .clip(RoundedCornerShape(DownloaderRadius.tile))
-                .background(DownloaderColors.PrimarySoft),
-            contentAlignment = Alignment.Center,
+        SettingIcon(icon = icon, tint = iconTint)
+        Spacer(Modifier.width(10.dp))
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center,
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = DownloaderColors.Cyan,
-                modifier = Modifier.size(18.dp),
-            )
-        }
-        Spacer(Modifier.width(12.dp))
-        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = DownloaderText.rowTitleSm,
+                style = DownloaderText.rowTitle,
+                fontWeight = FontWeight.Medium,
                 color = DownloaderColors.TextPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(2.dp))
-            Text(
-                text = value,
-                style = DownloaderText.metaSm,
-                color = DownloaderColors.TextSecondary,
-            )
-        }
-        if (actionLabel != null) {
-            Spacer(Modifier.width(8.dp))
-            TextButton(onClick = onAction) {
-                Text(actionLabel)
+            AnimatedContent(
+                targetState = value,
+                transitionSpec = {
+                    (fadeIn(tween(180)) + androidx.compose.animation.slideInVertically(tween(220)) { it / 3 }) togetherWith
+                        (fadeOut(tween(120)) + androidx.compose.animation.slideOutVertically(tween(160)) { -it / 3 })
+                },
+                label = "settingValue",
+            ) { current ->
+                Text(
+                    text = current,
+                    style = DownloaderText.metaSm,
+                    color = DownloaderColors.TextSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
+        }
+        Spacer(Modifier.width(8.dp))
+        if (trailing != null) {
+            trailing()
         } else {
             Icon(
-                Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                 contentDescription = null,
                 tint = DownloaderColors.TextMuted,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .padding(5.dp)
-                    .size(18.dp),
+                modifier = Modifier.size(18.dp),
             )
         }
     }
@@ -449,57 +386,137 @@ private fun SettingSwitchRow(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
+    val shape = RoundedCornerShape(14.dp)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp, vertical = 10.dp),
+            .height(52.dp)
+            .clip(shape)
+            .background(DownloaderColors.Surface)
+            .border(1.dp, DownloaderColors.Border, shape)
+            .padding(horizontal = 9.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            modifier = Modifier
-                .size(DownloaderDimens.iconTileMd)
-                .clip(RoundedCornerShape(DownloaderRadius.tile))
-                .background(DownloaderColors.PrimarySoft),
-            contentAlignment = Alignment.Center,
+        SettingIcon(icon = icon, tint = DownloaderColors.Primary)
+        Spacer(Modifier.width(10.dp))
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center,
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = DownloaderColors.Cyan,
-                modifier = Modifier.size(18.dp),
-            )
-        }
-        Spacer(Modifier.width(12.dp))
-        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = DownloaderText.rowTitleSm,
+                style = DownloaderText.rowTitle,
+                fontWeight = FontWeight.Medium,
                 color = DownloaderColors.TextPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(2.dp))
             Text(
                 text = value,
                 style = DownloaderText.metaSm,
                 color = DownloaderColors.TextSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
         Spacer(Modifier.width(8.dp))
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        DownloaderSwitch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 
 @Composable
-private fun LanguageOption(label: String, selected: Boolean, onClick: () -> Unit) {
-    Row(
+private fun SettingIcon(icon: ImageVector, tint: Color) {
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .clickable(onClick = onClick)
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .size(36.dp)
+            .clip(RoundedCornerShape(11.dp))
+            .background(DownloaderColors.PrimarySoft),
+        contentAlignment = Alignment.Center,
     ) {
-        RadioButton(selected = selected, onClick = onClick)
-        Spacer(Modifier.width(6.dp))
-        Text(label, style = MaterialTheme.typography.bodyMedium)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = tint,
+            modifier = Modifier.size(20.dp),
+        )
     }
+}
+
+/** Figma's compact 39×22 toggle, with a spring-driven thumb. */
+@Composable
+private fun DownloaderSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    val progress by animateDpAsState(
+        targetValue = if (checked) 17.dp else 0.dp,
+        animationSpec = spring(dampingRatio = 0.62f, stiffness = 640f),
+        label = "switchThumb",
+    )
+    val track by animateColorAsState(
+        targetValue = if (checked) DownloaderColors.Primary else DownloaderColors.Border,
+        animationSpec = tween(200),
+        label = "switchTrack",
+    )
+    val thumb by animateColorAsState(
+        targetValue = if (checked) Color.White else DownloaderColors.TextMuted,
+        animationSpec = tween(200),
+        label = "switchThumbColor",
+    )
+    Box(
+        modifier = Modifier
+            .size(width = 39.dp, height = 22.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(track)
+            .toggleable(
+                value = checked,
+                role = Role.Switch,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onValueChange = onCheckedChange,
+            )
+            .pressScale(scaleDown = 0.92f),
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(2.dp)
+                .offset(x = progress)
+                .size(18.dp)
+                .clip(CircleShape)
+                .background(thumb),
+        )
+    }
+}
+
+@Suppress("DEPRECATION")
+private fun applyLanguage(context: android.content.Context, viewModel: SettingsViewModel, tag: String) {
+    if (viewModel.language.value == tag) return
+    viewModel.setLanguage(tag)
+    (context as? Activity)?.let { activity ->
+        activity.recreate()
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+}
+
+private fun languageLabel(tag: String): String = when (tag) {
+    LocaleHelper.LANG_ENGLISH -> DownloaderApp.str(R.string.language_english)
+    else -> DownloaderApp.str(R.string.language_indonesian)
+}
+
+private fun appearanceSummary(
+    mode: ThemeMode,
+    palette: AccentPalette,
+    customHex: String,
+): String {
+    val paletteText = if (palette == AccentPalette.CUSTOM) {
+        DownloaderApp.str(R.string.appearance_palette_custom_value, customHex)
+    } else {
+        paletteLabel(palette)
+    }
+    return DownloaderApp.str(
+        R.string.appearance_summary_short,
+        themeModeLabel(mode),
+        paletteText,
+    )
 }

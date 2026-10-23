@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Downloader</string>
+    <string name="app_name">Fluxen</string>
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
@@ -13,6 +13,25 @@
     <!-- Online Music -->
     <string name="online_music_title">Online Music</string>
     <string name="online_music_subtitle">Browse and download music from supported sources.</string>
+    <string name="online_music_tag">ONLINE MUSIC</string>
+    <string name="online_music_hero_title">The music world, one tap away.</string>
+    <string name="online_music_hero_meta">Search a track, pick a source, then download.</string>
+    <string name="online_music_hero_action">Search now</string>
+    <string name="online_music_chip_for_you">For You</string>
+    <string name="online_music_chip_pop">Pop</string>
+    <string name="online_music_chip_lofi">Lo-fi</string>
+    <string name="online_music_chip_rock">Rock</string>
+    <string name="online_music_chip_jazz">Jazz</string>
+    <string name="online_music_trending">Trending Now</string>
+    <string name="online_music_made_for_you">Made For You</string>
+    <string name="online_music_shortcut_desc">Tap to search</string>
+    <string name="online_music_shortcut_pop">Popular this week</string>
+    <string name="online_music_shortcut_lofi">Lo-fi for focus</string>
+    <string name="online_music_shortcut_rock">Classic rock</string>
+    <string name="online_music_shortcut_jazz">Late night jazz</string>
+    <string name="online_music_playlist_top">Top Hits</string>
+    <string name="online_music_playlist_chill">Chill Vibes</string>
+    <string name="online_music_playlist_acoustic">Acoustic</string>
     <string name="online_music_hint">Search songs, artists, or keywords</string>
     <string name="online_music_search">Search</string>
     <string name="online_music_idle_title">Search online music</string>
@@ -147,7 +166,10 @@
     <string name="download_preset_storage_confirm_desc">Video is limited to 480p without HD (audio-only uses 128 kbps). Lower quality, but smaller file size.</string>
     <string name="download_preset_storage_confirm_action">Apply</string>
     <string name="download_preset_balanced_note">Balanced preset: Turbo mode disabled for a lighter queue.</string>
-    <string name="url_hint">Media link (YouTube, TikTok, Instagram, X, etc.)</string>
+    <string name="url_hint">Media link (YouTube, TikTok, etc.)</string>
+    <string name="url_status_hint">Media link • paste or type a URL</string>
+    <string name="url_status_ready">Media link • ready to download</string>
+    <string name="new_download_analyzing">Analyzing media…</string>
     <string name="action_paste">Paste from clipboard</string>
     <string name="action_clear_link">Clear link</string>
     <string name="action_analyze">Analyze</string>
@@ -193,6 +215,7 @@
     <string name="player_no_result_desc">Try a different keyword or sort order.</string>
     <string name="player_filter_favorites">Favorites</string>
     <string name="player_favorite_add">Add to favorites</string>
+    <string name="player_more">More</string>
     <string name="player_favorite_remove">Remove from favorites</string>
     <string name="player_no_favorites_title">No favorites yet</string>
     <string name="player_no_favorites_desc">Tap the heart icon on a track to add it to favorites.</string>
@@ -248,10 +271,11 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Personalize your Fluxen experience.</string>
     <string name="settings_download_section">Downloads</string>
     <string name="settings_turbo_title">Turbo Download</string>
-    <string name="settings_turbo_desc">Maximum speed: more parallel connections. Uses more battery and data.</string>
-    <string name="settings_storage_section">Storage</string>
+    <string name="settings_turbo_desc">Download multiple files at once</string>
+    <string name="settings_storage_section">Preferences</string>
     <string name="settings_history_section">History &amp; Log</string>
     <string name="settings_history_title">Download History</string>
     <string name="settings_history_desc">See all download results.</string>
@@ -259,7 +283,7 @@
     <string name="settings_log_desc">Activity and error notes for debugging.</string>
     <string name="settings_folder_title">Download Folder</string>
     <string name="settings_folder_current">Current folder</string>
-    <string name="settings_folder_default">Download/Downloader (default)</string>
+    <string name="settings_folder_default">Download/Downloader</string>
     <string name="settings_folder_pick">Choose Folder</string>
     <string name="settings_folder_change">Change Folder</string>
     <string name="settings_folder_picked">Folder selected: %1$s</string>
@@ -270,8 +294,46 @@
     <string name="settings_folder_reset_action">Reset</string>
     <string name="settings_folder_reset_done">Folder restored to default.</string>
     <string name="settings_language_section">Language</string>
-    <string name="settings_language_title">App Language</string>
+    <string name="settings_language_title">Language</string>
     <string name="settings_language_dialog_title">Choose Language</string>
+    <string name="language_sheet_title">Choose Language</string>
+    <string name="language_sheet_desc">Choose the app interface language.</string>
+    <string name="language_sheet_apply">Apply</string>
+    <string name="settings_appearance_section">Appearance</string>
+    <string name="settings_appearance_title">Appearance</string>
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_mode_dark">Dark Mode</string>
+    <string name="appearance_mode_light">Light Mode</string>
+    <string name="appearance_palette_label">Color Palette</string>
+    <string name="appearance_font_label">Font</string>
+    <string name="appearance_palette_blue">Blue</string>
+    <string name="appearance_palette_red">Red</string>
+    <string name="appearance_palette_green">Green</string>
+    <string name="appearance_palette_custom">Custom</string>
+    <string name="appearance_palette_custom_value">Custom (%1$s)</string>
+    <string name="appearance_font_default">Default</string>
+    <string name="appearance_font_system">System Font</string>
+    <string name="appearance_font_arkun">ArkunSans</string>
+    <string name="appearance_font_custom">Custom Font</string>
+    <string name="appearance_font_unavailable">Not available</string>
+    <string name="appearance_font_applied">Font %1$s applied.</string>
+    <string name="appearance_font_too_large">The font file is larger than 20 MB.</string>
+    <string name="appearance_font_invalid">The file is not a valid TTF/OTF font.</string>
+    <string name="appearance_font_unreadable">The font file could not be read. The previous choice is kept.</string>
+    <string name="appearance_font_pick">Pick a TTF/OTF font file</string>
+    <string name="appearance_custom_color_title">Custom Color</string>
+    <string name="appearance_custom_color_desc">Drag to pick a color. The HEX code updates automatically.</string>
+    <string name="appearance_custom_color_label">HEX code</string>
+    <string name="appearance_custom_color_hint">#3B82F6</string>
+    <string name="appearance_custom_color_invalid">That color is invalid. Try picking it again.</string>
+    <string name="appearance_custom_color_apply">Apply</string>
+    <string name="appearance_summary_short">%1$s • %2$s</string>
+    <string name="appearance_color_pick">Pick a custom color</string>
+    <string name="appearance_color_picker_sv">Saturation and brightness</string>
+    <string name="appearance_color_picker_hue">Hue</string>
+    <string name="appearance_color_picker_presets">Quick picks</string>
+    <string name="appearance_color_picker_drag">Drag to pick a color</string>
+    <string name="appearance_color_picker_hex">Color code</string>
     <string name="language_indonesian">Bahasa Indonesia</string>
     <string name="language_english">English</string>
     <string name="settings_cache_section">Cache</string>
@@ -286,7 +348,8 @@
     <string name="settings_cache_nothing">Nothing to clear.</string>
     <string name="settings_cache_busy">Active download cache was skipped.</string>
     <string name="settings_about_section">App</string>
-    <string name="settings_about_title">About</string>
+    <string name="settings_about_title">About Fluxen</string>
+    <string name="settings_about_subtitle">Developer, version, and licenses</string>
     <string name="settings_debug_title">Debug</string>
     <string name="settings_debug_desc">Device, engine, and storage info.</string>
 
@@ -295,7 +358,12 @@
     <string name="about_version">Version %1$s (build %2$s)</string>
     <string name="about_version_short">v%1$s</string>
     <string name="about_developer_label">Developer</string>
-    <string name="about_developer_value">DappKunzXD</string>
+    <string name="about_developer_value">DappKunz</string>
+    <string name="about_logo_desc">Fluxen app logo</string>
+    <string name="about_maintainers_label">Maintainers</string>
+    <string name="about_maintainer_1_name">DappKunz</string>
+    <string name="about_maintainer_2_name">n4zzuu</string>
+    <string name="about_open_profile">Open %1$s on GitHub</string>
     <string name="about_build_info">App Build Information</string>
     <string name="about_language">Language</string>
     <string name="about_version_label">Version :</string>
@@ -409,12 +477,24 @@
     <string name="settings_update_title">App Updates</string>
     <string name="settings_update_desc">Check the latest release from GitHub.</string>
     <string name="upd_title">App Updates</string>
+    <string name="upd_subtitle">Check the latest release on GitHub.</string>
+    <string name="upd_section_check">Update Check</string>
+    <string name="upd_version_label">Installed Version</string>
+    <string name="upd_version_note">Stable channel • arm64-v8a APK</string>
     <string name="upd_installed">Installed: %1$s</string>
     <string name="upd_last_checked">Last checked: %1$s</string>
     <string name="upd_never_checked">Never checked</string>
     <string name="upd_check">Check for Updates</string>
     <string name="upd_retry">Try Again</string>
     <string name="upd_checking">Checking the latest release…</string>
+    <string name="upd_status_checking">Checking for updates</string>
+    <string name="upd_status_idle">Ready to check</string>
+    <string name="upd_status_no_release">No release yet</string>
+    <string name="upd_status_latest">Latest version</string>
+    <string name="upd_status_uncomparable">Version unknown</string>
+    <string name="upd_status_error">Check failed</string>
+    <string name="upd_status_downloading">Downloading update</string>
+    <string name="upd_status_downloaded">Ready to install</string>
     <string name="upd_idle">Check for updates to see the latest release from GitHub.</string>
     <string name="upd_no_release">No release has been published yet.</string>
     <string name="upd_up_to_date">The app is already on the latest version.</string>
@@ -449,7 +529,7 @@
     <!-- Donation -->
     <string name="settings_donation_section">Support</string>
     <string name="settings_donation_title">Donate</string>
-    <string name="settings_donation_desc">Support the development of Downloader</string>
+    <string name="settings_donation_desc">Support the development of Fluxen</string>
     <string name="donation_title">Donate</string>
     <string name="donation_subtitle">The Saweria page opens inside the app.</string>
     <string name="donation_reload">Reload</string>
@@ -473,6 +553,11 @@
     <string name="player_cat_folders">Folders</string>
     <string name="player_cat_favorites">Favorites</string>
     <string name="player_cat_playlists">Playlists</string>
+    <string name="player_cat_recent">Recently Added</string>
+    <string name="player_quick_collections">Quick Collections</string>
+    <string name="player_collection_favorites_desc">%1$d favorite tracks</string>
+    <string name="player_collection_playlists_desc">%1$d playlists</string>
+    <string name="player_collection_open">Open collection</string>
     <string name="player_sort_album">Album</string>
     <string name="player_play_all">Play all</string>
     <string name="player_shuffle_all">Shuffle all</string>

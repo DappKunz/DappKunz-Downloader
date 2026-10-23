@@ -99,24 +99,24 @@ fun MediaPreview(meta: NormalizedMetadata) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             val thumb = meta.media.thumbnail
-            if (!thumb.isNullOrBlank()) {
-                AsyncImage(
-                    model = thumb,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(DownloaderDimens.artworkXl)
-                        .clip(RoundedCornerShape(DownloaderRadius.artwork))
-                        .background(DownloaderColors.SurfaceVariant),
-                )
-            } else {
+            Box(modifier = Modifier.size(DownloaderDimens.artworkXl)) {
                 ArtworkTile(
                     seed = meta.media.title,
-                    modifier = Modifier.size(DownloaderDimens.artworkXl),
+                    modifier = Modifier.matchParentSize(),
                     corner = DownloaderRadius.artwork,
                     label = mediaTypeLabel(meta.media.type).uppercase(),
                     labelStyle = DownloaderText.chip,
                 )
+                if (!thumb.isNullOrBlank()) {
+                    AsyncImage(
+                        model = thumb,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(RoundedCornerShape(DownloaderRadius.artwork)),
+                    )
+                }
             }
 
             Spacer(Modifier.width(12.dp))
@@ -560,7 +560,8 @@ fun PrimaryDownloadButton(
             shape = RoundedCornerShape(DownloaderRadius.card),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(46.dp),
+                .height(46.dp)
+                .pressScale(scaleDown = 0.97f),
         ) {
             if (loading) {
                 androidx.compose.material3.CircularProgressIndicator(

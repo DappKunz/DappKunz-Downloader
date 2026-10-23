@@ -42,7 +42,11 @@ import androidx.compose.ui.unit.dp
 import com.downloader.app.ui.theme.DownloaderColors
 
 @Composable
-fun AnimatedErrorBanner(message: String?, onDismiss: () -> Unit) {
+fun AnimatedErrorBanner(
+    message: String?,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var lastMessage by remember { mutableStateOf("") }
     if (message != null) lastMessage = message
 
@@ -51,17 +55,21 @@ fun AnimatedErrorBanner(message: String?, onDismiss: () -> Unit) {
         enter = fadeIn(tween(220)) + expandVertically(tween(240)),
         exit = fadeOut(tween(150)) + shrinkVertically(tween(200)),
     ) {
-        ErrorBanner(message = lastMessage, onDismiss = onDismiss)
+        ErrorBanner(message = lastMessage, onDismiss = onDismiss, modifier = modifier)
     }
 }
 
 @Composable
-fun ErrorBanner(message: String, onDismiss: () -> Unit) {
+fun ErrorBanner(
+    message: String,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Surface(
         shape = MaterialTheme.shapes.medium,
         color = DownloaderColors.Danger.copy(alpha = 0.12f),
         contentColor = DownloaderColors.Danger,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier.padding(start = 14.dp, end = 6.dp, top = 10.dp, bottom = 10.dp),

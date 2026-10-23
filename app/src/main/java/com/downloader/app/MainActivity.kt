@@ -14,9 +14,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.SideEffect
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import com.downloader.app.core.util.LocaleHelper
 import com.downloader.app.ui.AppRoot
+import com.downloader.app.ui.theme.DownloaderColors
 import com.downloader.app.ui.theme.DownloaderTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,6 +44,12 @@ class MainActivity : ComponentActivity() {
         handleShareIntent(intent)
         setContent {
             DownloaderTheme {
+                val lightSystemBars = !DownloaderColors.isDark
+                SideEffect {
+                    val controller = WindowCompat.getInsetsController(window, window.decorView)
+                    controller.isAppearanceLightStatusBars = lightSystemBars
+                    controller.isAppearanceLightNavigationBars = lightSystemBars
+                }
                 AppRoot(
                     sharedUrl = pendingShareUrl,
                     onSharedUrlConsumed = { pendingShareUrl = null },

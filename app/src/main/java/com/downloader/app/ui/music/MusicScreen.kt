@@ -6,6 +6,10 @@ import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,13 +23,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
@@ -46,7 +53,6 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -70,6 +76,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -99,6 +108,9 @@ import com.downloader.app.ui.components.ArtworkTile
 import com.downloader.app.ui.components.artworkInitials
 import com.downloader.app.ui.components.DownloaderChip
 import com.downloader.app.ui.components.DownloaderSearchField
+import com.downloader.app.ui.components.MotionDialog
+import com.downloader.app.ui.components.entrance
+import com.downloader.app.ui.components.pressScale
 import kotlinx.coroutines.delay
 
 /**
@@ -135,11 +147,24 @@ fun MusicScreen(
     }
 
     var addToPlaylistTrack by remember { mutableStateOf<Track?>(null) }
+    var addTargetSnapshot by remember { mutableStateOf<Track?>(null) }
     var createPlaylistDialog by remember { mutableStateOf(false) }
     var renameTarget by remember { mutableStateOf<MusicPlaylist?>(null) }
+    var renameSnapshot by remember { mutableStateOf<MusicPlaylist?>(null) }
     var deleteTarget by remember { mutableStateOf<MusicPlaylist?>(null) }
+    var deleteSnapshot by remember { mutableStateOf<MusicPlaylist?>(null) }
     var notice by remember { mutableStateOf<Int?>(null) }
     var noticeArg by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(addToPlaylistTrack) {
+        if (addToPlaylistTrack != null) addTargetSnapshot = addToPlaylistTrack
+    }
+    LaunchedEffect(renameTarget) {
+        if (renameTarget != null) renameSnapshot = renameTarget
+    }
+    LaunchedEffect(deleteTarget) {
+        if (deleteTarget != null) deleteSnapshot = deleteTarget
+    }
 
     LaunchedEffect(notice) {
         if (notice != null) {
@@ -157,6 +182,7 @@ fun MusicScreen(
         TrackQuery.filterSort(tracks, viewModel.query, viewModel.sort)
     }
     val favorites = remember(matched, favoriteIds) { matched.filter { it.id in favoriteIds } }
+    val recentPreview = remember(tracks) { tracks.sortedByDescending { it.dateAddedMs }.take(4) }
     val albums = remember(matched, unknownAlbum) { LibraryGroups.albums(matched, unknownAlbum) }
     val artists = remember(matched, unknownArtist) { LibraryGroups.artists(matched, unknownArtist) }
     val folders = remember(matched, unknownFolder) { LibraryGroups.folders(matched, unknownFolder) }
@@ -171,7 +197,11 @@ fun MusicScreen(
         onOpenPlayer()
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .clipToBounds(),
+    ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
@@ -182,6 +212,7 @@ fun MusicScreen(
                     MusicHeader(
                         scanning = scanState == MusicLibrary.ScanState.Loading,
                         onRescan = viewModel::refresh,
+                        modifier = Modifier.entrance(0, offsetY = 10),
                     )
                 }
 
@@ -217,22 +248,26 @@ fun MusicScreen(
                         value = viewModel.query,
                         onValueChange = viewModel::onQueryChange,
                         placeholder = DownloaderApp.str(R.string.player_search_hint),
+                        modifier = Modifier.entrance(1, offsetY = 10),
                     )
                 }
 
                 item(key = "categories") {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    Column(
+                        modifier = Modifier.entrance(2, offsetY = 10),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        CategoryChip(LibraryCategory.SONGS, viewModel)
-                        CategoryChip(LibraryCategory.ALBUMS, viewModel)
-                        CategoryChip(LibraryCategory.ARTISTS, viewModel)
-                        CategoryChip(LibraryCategory.FOLDERS, viewModel)
-                        CategoryChip(LibraryCategory.FAVORITES, viewModel)
-                        CategoryChip(LibraryCategory.PLAYLISTS, viewModel)
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            CategoryChip(LibraryCategory.SONGS, viewModel)
+                            CategoryChip(LibraryCategory.ALBUMS, viewModel)
+                            CategoryChip(LibraryCategory.ARTISTS, viewModel)
+                            CategoryChip(LibraryCategory.FOLDERS, viewModel)
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            CategoryChip(LibraryCategory.FAVORITES, viewModel)
+                            CategoryChip(LibraryCategory.PLAYLISTS, viewModel)
+                            CategoryChip(LibraryCategory.RECENT, viewModel)
+                        }
                     }
                 }
             }
@@ -269,7 +304,10 @@ fun MusicScreen(
                     } ?: DownloaderApp.str(R.string.player_cat_songs)
 
                     item(key = "detail-header") {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            modifier = Modifier.entrance(0, offsetY = 8),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             IconButton(onClick = viewModel::closeDetail) {
                                 Icon(
                                     Icons.AutoMirrored.Rounded.ArrowBack,
@@ -365,7 +403,7 @@ fun MusicScreen(
                             )
                         }
                     } else {
-                        items(groupTracks, key = { it.id }) { track ->
+                        itemsIndexed(groupTracks, key = { _, track -> track.id }) { index, track ->
                             LibraryTrackRow(
                                 track = track,
                                 isCurrent = track.id == current?.id,
@@ -385,6 +423,9 @@ fun MusicScreen(
                                         notice = R.string.player_playlist_removed
                                     }
                                 },
+                                modifier = Modifier
+                                    .entrance(index.coerceAtMost(8), offsetY = 10)
+                                    .animateItem(),
                             )
                         }
                     }
@@ -396,7 +437,8 @@ fun MusicScreen(
                     LibraryScanError(onRetry = viewModel::refresh)
                 }
 
-                tracks.isEmpty() -> item(key = "empty") { LibraryEmpty() }
+                tracks.isEmpty() && viewModel.category != LibraryCategory.SONGS ->
+                    item(key = "empty") { LibraryEmpty() }
 
                 viewModel.category == LibraryCategory.PLAYLISTS -> {
                     item(key = "playlists-header") {
@@ -498,20 +540,83 @@ fun MusicScreen(
 
                 else -> {
                     val favoriteCategory = viewModel.category == LibraryCategory.FAVORITES
-                    val list = if (favoriteCategory) favorites else matched
+                    val recentCategory = viewModel.category == LibraryCategory.RECENT
+                    val dashboard = !favoriteCategory && !recentCategory && viewModel.query.isBlank()
+                    val list = when {
+                        favoriteCategory -> favorites
+                        recentCategory -> TrackQuery.filterSort(tracks, viewModel.query, MusicSort.RECENT)
+                        else -> matched
+                    }
+                    if (dashboard) {
+                        if (recentPreview.isNotEmpty()) {
+                            item(key = "recent-header") {
+                            SectionHeader(
+                                title = DownloaderApp.str(R.string.player_cat_recent),
+                                count = "",
+                                actionLabel = DownloaderApp.str(R.string.history_see_all),
+                                onAction = { viewModel.onCategoryChange(LibraryCategory.RECENT) },
+                                modifier = Modifier.entrance(3, offsetY = 8),
+                            )
+                        }
+                        items(recentPreview, key = { "recent-${it.id}" }) { track ->
+                            LibraryTrackRow(
+                                track = track,
+                                isCurrent = track.id == current?.id,
+                                isPlaying = track.id == current?.id && playing,
+                                isFavorite = track.id in favoriteIds,
+                                onClick = { openPlayer(track, recentPreview) },
+                                onToggleFavorite = { viewModel.toggleFavorite(track.id) },
+                                onPlayNext = { viewModel.playNext(track) },
+                                onAddToQueue = {
+                                    viewModel.addToQueue(track)
+                                    notice = R.string.player_queued
+                                },
+                                onAddToPlaylist = { addToPlaylistTrack = track },
+                                onRemove = null,
+                                modifier = Modifier.animateItem(),
+                            )
+                        }
+                        }
+
+                        item(key = "quick-collections-header") {
+                            SectionHeader(
+                                title = DownloaderApp.str(R.string.player_quick_collections),
+                                count = "",
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
+                                    .entrance(4, offsetY = 8),
+                            )
+                        }
+                        item(key = "quick-collections") {
+                            QuickCollections(
+                                favoriteCount = favorites.size,
+                                playlistCount = playlists.size,
+                                onFavorites = { viewModel.onCategoryChange(LibraryCategory.FAVORITES) },
+                                onPlaylists = { viewModel.onCategoryChange(LibraryCategory.PLAYLISTS) },
+                                modifier = Modifier.entrance(5, offsetY = 12),
+                            )
+                        }
+                    }
 
                     item(key = "songs-header") {
                         SectionHeader(
                             title = DownloaderApp.str(
-                                if (favoriteCategory) {
-                                    R.string.player_cat_favorites
-                                } else {
-                                    R.string.player_cat_songs
+                                when {
+                                    favoriteCategory -> R.string.player_cat_favorites
+                                    recentCategory -> R.string.player_cat_recent
+                                    else -> R.string.player_cat_songs
                                 },
                             ),
                             count = DownloaderApp.str(R.string.player_tracks_count, list.size),
                             onPlayAll = { viewModel.playAll(list) },
                             onShuffleAll = { viewModel.shuffleAll(list) },
+                            modifier = if (dashboard) {
+                                Modifier
+                                    .padding(top = 4.dp)
+                                    .entrance(6, offsetY = 8)
+                            } else {
+                                Modifier
+                            },
                         )
                     }
 
@@ -556,10 +661,16 @@ fun MusicScreen(
                             }
                         }
 
-                        list.isEmpty() -> item(key = "no-result") { LibraryNoResult() }
+                        list.isEmpty() -> item(key = "no-result") {
+                            if (viewModel.category == LibraryCategory.SONGS && viewModel.query.isBlank()) {
+                                LibraryEmpty()
+                            } else {
+                                LibraryNoResult()
+                            }
+                        }
 
                         else -> {
-                            items(list, key = { it.id }) { track ->
+                            itemsIndexed(list, key = { _, track -> track.id }) { index, track ->
                                 LibraryTrackRow(
                                     track = track,
                                     isCurrent = track.id == current?.id,
@@ -574,6 +685,9 @@ fun MusicScreen(
                                     },
                                     onAddToPlaylist = { addToPlaylistTrack = track },
                                     onRemove = null,
+                                    modifier = Modifier
+                                        .entrance(index.coerceAtMost(8), offsetY = 10)
+                                        .animateItem(),
                                 )
                             }
                         }
@@ -594,26 +708,34 @@ fun MusicScreen(
         }
     }
 
-    val selected = addToPlaylistTrack
-    if (selected != null) {
-        AddToPlaylistDialog(
-            playlists = playlists,
-            onDismiss = { addToPlaylistTrack = null },
-            onPick = { target ->
-                val added = viewModel.addToPlaylist(target.id, selected.id)
-                notice = if (added) R.string.player_playlist_added else R.string.player_playlist_exists
-                noticeArg = target.name
-                addToPlaylistTrack = null
-            },
-            onCreateNew = {
-                addToPlaylistTrack = null
-                createPlaylistDialog = true
-            },
-        )
+    MotionDialog(
+        visible = addToPlaylistTrack != null,
+        onDismiss = { addToPlaylistTrack = null },
+    ) {
+        val selected = addTargetSnapshot
+        if (selected != null) {
+            AddToPlaylistContent(
+                playlists = playlists,
+                onDismiss = { addToPlaylistTrack = null },
+                onPick = { target ->
+                    val added = viewModel.addToPlaylist(target.id, selected.id)
+                    notice = if (added) R.string.player_playlist_added else R.string.player_playlist_exists
+                    noticeArg = target.name
+                    addToPlaylistTrack = null
+                },
+                onCreateNew = {
+                    addToPlaylistTrack = null
+                    createPlaylistDialog = true
+                },
+            )
+        }
     }
 
-    if (createPlaylistDialog) {
-        PlaylistNameDialog(
+    MotionDialog(
+        visible = createPlaylistDialog,
+        onDismiss = { createPlaylistDialog = false },
+    ) {
+        PlaylistNameContent(
             title = DownloaderApp.str(R.string.player_new_playlist),
             initial = "",
             confirmLabel = DownloaderApp.str(R.string.player_playlist_create),
@@ -628,40 +750,68 @@ fun MusicScreen(
         )
     }
 
-    renameTarget?.let { target ->
-        PlaylistNameDialog(
-            title = DownloaderApp.str(R.string.player_playlist_rename),
-            initial = target.name,
-            confirmLabel = DownloaderApp.str(R.string.action_change),
-            onDismiss = { renameTarget = null },
-            onConfirm = { name ->
-                viewModel.renamePlaylist(target.id, name)
-                renameTarget = null
-            },
-        )
+    MotionDialog(
+        visible = renameTarget != null,
+        onDismiss = { renameTarget = null },
+    ) {
+        val target = renameSnapshot
+        if (target != null) {
+            androidx.compose.runtime.key(target.id) {
+                PlaylistNameContent(
+                    title = DownloaderApp.str(R.string.player_playlist_rename),
+                    initial = target.name,
+                    confirmLabel = DownloaderApp.str(R.string.action_change),
+                    onDismiss = { renameTarget = null },
+                    onConfirm = { name ->
+                        viewModel.renamePlaylist(target.id, name)
+                        renameTarget = null
+                    },
+                )
+            }
+        }
     }
 
-    deleteTarget?.let { target ->
-        AlertDialog(
-            onDismissRequest = { deleteTarget = null },
-            title = { Text(DownloaderApp.str(R.string.player_playlist_delete)) },
-            text = { Text(DownloaderApp.str(R.string.player_playlist_delete_confirm, target.name)) },
-            confirmButton = {
+    MotionDialog(
+        visible = deleteTarget != null,
+        onDismiss = { deleteTarget = null },
+    ) {
+        val target = deleteSnapshot
+        if (target != null) {
+            Text(
+                text = DownloaderApp.str(R.string.player_playlist_delete),
+                style = DownloaderText.dialogTitle,
+                color = DownloaderColors.TextPrimary,
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = DownloaderApp.str(R.string.player_playlist_delete_confirm, target.name),
+                style = DownloaderText.body,
+                color = DownloaderColors.TextSecondary,
+            )
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = { deleteTarget = null }) {
+                    Text(DownloaderApp.str(R.string.action_cancel))
+                }
+                Spacer(Modifier.width(4.dp))
                 TextButton(
                     onClick = {
                         viewModel.deletePlaylist(target.id)
                         deleteTarget = null
                     },
                 ) {
-                    Text(DownloaderApp.str(R.string.action_delete))
+                    Text(
+                        text = DownloaderApp.str(R.string.action_delete),
+                        color = DownloaderColors.Danger,
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { deleteTarget = null }) {
-                    Text(DownloaderApp.str(R.string.action_cancel))
-                }
-            },
-        )
+            }
+        }
     }
 }
 
@@ -674,6 +824,7 @@ private fun CategoryChip(category: LibraryCategory, viewModel: MusicViewModel) {
         LibraryCategory.FOLDERS -> R.string.player_cat_folders
         LibraryCategory.FAVORITES -> R.string.player_cat_favorites
         LibraryCategory.PLAYLISTS -> R.string.player_cat_playlists
+        LibraryCategory.RECENT -> R.string.player_cat_recent
     }
     DownloaderChip(
         label = DownloaderApp.str(label),
@@ -704,20 +855,34 @@ private fun SectionHeader(
     count: String,
     onPlayAll: (() -> Unit)? = null,
     onShuffleAll: (() -> Unit)? = null,
+    actionLabel: String? = null,
+    onAction: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
+                style = DownloaderText.sectionTitle,
+                color = DownloaderColors.TextPrimary,
                 modifier = Modifier.weight(1f),
             )
-            Text(
-                text = count,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (count.isNotBlank()) {
+                Text(
+                    text = count,
+                    style = DownloaderText.metaSm,
+                    color = DownloaderColors.TextSecondary,
+                )
+            }
+            if (actionLabel != null && onAction != null) {
+                TextButton(onClick = onAction) {
+                    Text(
+                        text = actionLabel,
+                        style = DownloaderText.meta,
+                        color = DownloaderColors.Primary,
+                    )
+                }
+            }
         }
         if (onPlayAll != null && onShuffleAll != null) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -745,12 +910,102 @@ private fun SectionHeader(
 }
 
 @Composable
+private fun QuickCollections(
+    favoriteCount: Int,
+    playlistCount: Int,
+    onFavorites: () -> Unit,
+    onPlaylists: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(11.dp),
+    ) {
+        CollectionCard(
+            title = DownloaderApp.str(R.string.player_cat_favorites),
+            subtitle = DownloaderApp.str(R.string.player_collection_favorites_desc, favoriteCount),
+            icon = Icons.Rounded.Favorite,
+            accent = DownloaderColors.Favorite,
+            onClick = onFavorites,
+            modifier = Modifier.weight(1f),
+        )
+        CollectionCard(
+            title = DownloaderApp.str(R.string.player_cat_playlists),
+            subtitle = DownloaderApp.str(R.string.player_collection_playlists_desc, playlistCount),
+            icon = Icons.AutoMirrored.Rounded.QueueMusic,
+            accent = DownloaderColors.Cyan,
+            onClick = onPlaylists,
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+@Composable
+private fun CollectionCard(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    accent: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(15.dp),
+        color = DownloaderColors.Surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, DownloaderColors.Border),
+        modifier = modifier
+            .height(132.dp)
+            .pressScale(scaleDown = 0.96f),
+    ) {
+        Column(modifier = Modifier.padding(10.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(accent.copy(alpha = 0.16f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = accent,
+                    modifier = Modifier.size(25.dp),
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = title,
+                style = DownloaderText.rowTitle,
+                color = DownloaderColors.TextPrimary,
+                maxLines = 1,
+            )
+            Spacer(Modifier.height(1.dp))
+            Text(
+                text = subtitle,
+                style = DownloaderText.metaSm,
+                color = DownloaderColors.TextSecondary,
+                maxLines = 1,
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = DownloaderApp.str(R.string.player_collection_open),
+                style = DownloaderText.metaSm,
+                color = DownloaderColors.Primary,
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+@Composable
 private fun NewPlaylistRow(onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(DownloaderRadius.md))
             .clickable(onClick = onClick)
+            .pressScale(scaleDown = 0.985f)
             .padding(horizontal = 5.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -784,12 +1039,14 @@ private fun GroupRow(
     sample: Track?,
     onClick: () -> Unit,
     fallbackIcon: ImageVector = Icons.Rounded.MusicNote,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(DownloaderRadius.md))
             .clickable(onClick = onClick)
+            .pressScale(scaleDown = 0.985f)
             .padding(horizontal = 5.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -849,18 +1106,33 @@ private fun LibraryTrackRow(
     onAddToQueue: () -> Unit,
     onAddToPlaylist: () -> Unit,
     onRemove: (() -> Unit)?,
+    modifier: Modifier = Modifier,
 ) {
     var menu by remember { mutableStateOf(false) }
+    val currentBorder by animateColorAsState(
+        targetValue = if (isCurrent) DownloaderColors.PrimarySoft else Color.Transparent,
+        animationSpec = tween(240),
+        label = "trackBorder",
+    )
+    val titleColor by animateColorAsState(
+        targetValue = if (isCurrent) DownloaderColors.PrimaryLight else DownloaderColors.TextPrimary,
+        animationSpec = tween(220),
+        label = "trackTitle",
+    )
+    val favoriteScale by animateFloatAsState(
+        targetValue = if (isFavorite) 1.16f else 1f,
+        animationSpec = spring(dampingRatio = 0.45f, stiffness = 700f),
+        label = "favoriteScale",
+    )
 
     val shape = RoundedCornerShape(DownloaderRadius.row)
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .then(
-                if (isCurrent) Modifier.border(1.dp, DownloaderColors.PrimarySoft, shape) else Modifier,
-            )
+            .border(1.dp, currentBorder, shape)
             .clickable(onClick = onClick)
+            .pressScale(scaleDown = 0.985f)
             .padding(horizontal = 5.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -875,7 +1147,7 @@ private fun LibraryTrackRow(
             Text(
                 text = track.title,
                 style = DownloaderText.rowTitleSm,
-                color = if (isCurrent) DownloaderColors.PrimaryLight else DownloaderColors.TextPrimary,
+                color = titleColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -930,7 +1202,9 @@ private fun LibraryTrackRow(
                     if (isFavorite) R.string.player_favorite_remove else R.string.player_favorite_add,
                 ),
                 tint = if (isFavorite) DownloaderColors.Primary else DownloaderColors.TextFaint,
-                modifier = Modifier.size(19.dp),
+                modifier = Modifier
+                    .size(19.dp)
+                    .scale(favoriteScale),
             )
         }
         Box {
@@ -991,110 +1265,130 @@ private fun LibraryTrackRow(
 }
 
 @Composable
-private fun AddToPlaylistDialog(
+private fun AddToPlaylistContent(
     playlists: List<MusicPlaylist>,
     onDismiss: () -> Unit,
     onPick: (MusicPlaylist) -> Unit,
     onCreateNew: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(DownloaderApp.str(R.string.player_add_playlist)) },
-        text = {
-            Column {
-                Row(
+    Text(
+        text = DownloaderApp.str(R.string.player_add_playlist),
+        style = DownloaderText.dialogTitle,
+        color = DownloaderColors.TextPrimary,
+    )
+    Spacer(Modifier.height(10.dp))
+    Column(
+        modifier = Modifier
+            .heightIn(max = 300.dp)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .clickable(onClick = onCreateNew)
+                .pressScale(scaleDown = 0.98f)
+                .padding(vertical = 10.dp, horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                Icons.Rounded.Add,
+                contentDescription = null,
+                tint = DownloaderColors.Primary,
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(Modifier.width(10.dp))
+            Text(
+                text = DownloaderApp.str(R.string.player_new_playlist),
+                style = DownloaderText.rowTitle,
+                color = DownloaderColors.Primary,
+            )
+        }
+        if (playlists.isEmpty()) {
+            Text(
+                text = DownloaderApp.str(R.string.player_playlists_empty_desc),
+                style = DownloaderText.metaSm,
+                color = DownloaderColors.TextSecondary,
+                modifier = Modifier.padding(vertical = 8.dp),
+            )
+        } else {
+            playlists.forEach { playlist ->
+                Text(
+                    text = playlist.name,
+                    style = DownloaderText.rowTitle,
+                    color = DownloaderColors.TextPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
-                        .clickable(onClick = onCreateNew)
-                        .padding(vertical = 10.dp, horizontal = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        Icons.Rounded.Add,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp),
-                    )
-                    Spacer(Modifier.width(10.dp))
-                    Text(
-                        text = DownloaderApp.str(R.string.player_new_playlist),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                if (playlists.isEmpty()) {
-                    Text(
-                        text = DownloaderApp.str(R.string.player_playlists_empty_desc),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 8.dp),
-                    )
-                } else {
-                    playlists.forEach { playlist ->
-                        Text(
-                            text = playlist.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(10.dp))
-                                .clickable { onPick(playlist) }
-                                .padding(vertical = 12.dp, horizontal = 4.dp),
-                        )
-                    }
-                }
+                        .clickable { onPick(playlist) }
+                        .pressScale(scaleDown = 0.98f)
+                        .padding(vertical = 12.dp, horizontal = 4.dp),
+                )
             }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text(DownloaderApp.str(R.string.action_cancel))
-            }
-        },
-    )
+        }
+    }
+    Spacer(Modifier.height(8.dp))
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        TextButton(onClick = onDismiss) {
+            Text(DownloaderApp.str(R.string.action_cancel))
+        }
+    }
 }
 
 @Composable
-private fun PlaylistNameDialog(
+private fun PlaylistNameContent(
     title: String,
     initial: String,
     confirmLabel: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
 ) {
-    var value by remember { mutableStateOf(initial) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            OutlinedTextField(
-                value = value,
-                onValueChange = { value = it },
-                label = { Text(DownloaderApp.str(R.string.player_playlist_name)) },
-                singleLine = true,
-                shape = MaterialTheme.shapes.small,
-            )
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { onConfirm(value.trim()) },
-                enabled = value.trim().isNotEmpty(),
-            ) {
-                Text(confirmLabel)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(DownloaderApp.str(R.string.action_cancel))
-            }
-        },
+    var value by remember(initial) { mutableStateOf(initial) }
+    Text(
+        text = title,
+        style = DownloaderText.dialogTitle,
+        color = DownloaderColors.TextPrimary,
     )
+    Spacer(Modifier.height(10.dp))
+    OutlinedTextField(
+        value = value,
+        onValueChange = { value = it },
+        label = { Text(DownloaderApp.str(R.string.player_playlist_name)) },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth(),
+    )
+    Spacer(Modifier.height(16.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextButton(onClick = onDismiss) {
+            Text(DownloaderApp.str(R.string.action_cancel))
+        }
+        Spacer(Modifier.width(4.dp))
+        TextButton(
+            onClick = { onConfirm(value.trim()) },
+            enabled = value.trim().isNotEmpty(),
+        ) {
+            Text(confirmLabel, fontWeight = FontWeight.Bold)
+        }
+    }
 }
 
 @Composable
-private fun MusicHeader(scanning: Boolean, onRescan: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+private fun MusicHeader(
+    scanning: Boolean,
+    onRescan: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -1218,23 +1512,29 @@ fun TrackArtwork(
     iconSize: Dp,
 ) {
     val model = track.embeddedArt ?: track.artworkUri
-    if (model != null) {
-        AsyncImage(
-            model = model,
-            contentDescription = null,
-            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-            modifier = modifier.clip(RoundedCornerShape(corner)),
-        )
-    } else {
+    Box(modifier = modifier) {
         val initials = artworkInitials(track.title)
+        // Placeholder selalu berada di belakang gambar. Dengan begitu album
+        // atau lagu yang metadata artwork-nya ada tetapi berkas gambarnya
+        // hilang tidak menyisakan kotak kosong di daftar.
         ArtworkTile(
             seed = track.id,
-            modifier = modifier,
+            modifier = Modifier.matchParentSize(),
             corner = corner,
             label = initials.ifBlank { null },
             icon = if (initials.isBlank()) Icons.Rounded.MusicNote else null,
             iconSize = iconSize,
         )
+        if (model != null) {
+            AsyncImage(
+                model = model,
+                contentDescription = null,
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                modifier = Modifier
+                    .matchParentSize()
+                    .clip(RoundedCornerShape(corner)),
+            )
+        }
     }
 }
 

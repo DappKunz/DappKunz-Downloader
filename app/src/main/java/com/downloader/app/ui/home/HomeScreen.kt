@@ -17,8 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
@@ -51,11 +50,15 @@ import com.downloader.app.core.model.JobStage
 import com.downloader.app.core.util.Formatters
 import com.downloader.app.data.HistoryEntry
 import com.downloader.app.data.HistoryStatus
+import com.downloader.app.ui.components.AnimatedBytesText
 import com.downloader.app.ui.components.AnimatedErrorBanner
+import com.downloader.app.ui.components.AnimatedIntText
 import com.downloader.app.ui.components.ArtworkTile
 import com.downloader.app.ui.components.EmptyStateBox
+import com.downloader.app.ui.components.entrance
 import com.downloader.app.ui.components.formatTagLabel
 import com.downloader.app.ui.components.JobCard
+import com.downloader.app.ui.components.pressScale
 import com.downloader.app.ui.components.SectionHeader
 import com.downloader.app.ui.components.StatusChip
 import com.downloader.app.ui.theme.ArtworkTones
@@ -100,7 +103,7 @@ fun HomeScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(DownloaderSpacing.md),
     ) {
-        item { GreetingHeader() }
+        item { GreetingHeader(modifier = Modifier.entrance(0)) }
 
         val engineFailure = engineState as? EngineManager.State.Failed
         if (engineFailure != null) {
@@ -108,6 +111,7 @@ fun HomeScreen(
                 AnimatedErrorBanner(
                     message = DownloaderApp.str(R.string.engine_failed_banner, engineFailure.message),
                     onDismiss = { },
+                    modifier = Modifier.entrance(1),
                 )
             }
         } else if (engineState is EngineManager.State.Preparing) {
@@ -115,6 +119,7 @@ fun HomeScreen(
                 StatusChip(
                     label = DownloaderApp.str(R.string.engine_preparing),
                     color = DownloaderColors.Warning,
+                    modifier = Modifier.entrance(1),
                 )
             }
         }
@@ -124,20 +129,25 @@ fun HomeScreen(
                 completed = stats.completed,
                 active = stats.active,
                 totalBytes = stats.totalBytes,
+                modifier = Modifier.entrance(1),
             )
         }
 
         item {
-            SectionHeader(title = DownloaderApp.str(R.string.home_download_by_type))
+            SectionHeader(
+                title = DownloaderApp.str(R.string.home_download_by_type),
+                modifier = Modifier.entrance(2),
+            )
         }
 
-        item { QuickTypeRow(onQuickType = onQuickType) }
+        item { QuickTypeRow(onQuickType = onQuickType, modifier = Modifier.entrance(3)) }
 
         item {
             SectionHeader(
                 title = DownloaderApp.str(R.string.section_active_downloads),
                 actionLabel = DownloaderApp.str(R.string.history_see_all),
                 onAction = onSeeAllHistory,
+                modifier = Modifier.entrance(4),
             )
         }
 
@@ -147,18 +157,20 @@ fun HomeScreen(
                     icon = Icons.Rounded.CloudDownload,
                     title = DownloaderApp.str(R.string.home_active_empty_title),
                     description = DownloaderApp.str(R.string.home_active_empty_desc),
+                    modifier = Modifier.entrance(5),
                 )
             }
         } else {
-            items(activeJobs + failedJobs, key = { it.jobId }) { job ->
+            itemsIndexed(activeJobs + failedJobs, key = { _, job -> job.jobId }) { index, job ->
                 JobCard(
                     job = job,
                     onPause = { viewModel.pause(job.jobId) },
                     onResume = { viewModel.resume(job.jobId) },
                     onCancel = { viewModel.cancel(job.jobId) },
                     onRetry = { viewModel.retry(job.jobId) },
-                    onCancelItem = { index -> viewModel.cancelItem(job.jobId, index) },
+                    onCancelItem = { itemIndex -> viewModel.cancelItem(job.jobId, itemIndex) },
                     onDismiss = { viewModel.dismiss(job.jobId) },
+                    modifier = Modifier.entrance(index, offsetY = 12),
                 )
             }
         }
@@ -168,6 +180,7 @@ fun HomeScreen(
                 title = DownloaderApp.str(R.string.home_recent_downloads),
                 actionLabel = DownloaderApp.str(R.string.history_see_all),
                 onAction = onSeeAllHistory,
+                modifier = Modifier.entrance(5),
             )
         }
 
@@ -177,18 +190,23 @@ fun HomeScreen(
                     icon = Icons.Rounded.History,
                     title = DownloaderApp.str(R.string.history_empty_title),
                     description = DownloaderApp.str(R.string.history_empty_desc),
+                    modifier = Modifier.entrance(6),
                 )
             }
         } else {
-            items(history.take(3), key = { "h_${it.id}" }) { entry ->
-                RecentDownloadRow(entry = entry, onClick = onSeeAllHistory)
+            itemsIndexed(history.take(3), key = { _, entry -> "h_${entry.id}" }) { index, entry ->
+                RecentDownloadRow(
+                    entry = entry,
+                    onClick = onSeeAllHistory,
+                    modifier = Modifier.entrance(index, offsetY = 10),
+                )
             }
         }
     }
 }
 
 @Composable
-private fun GreetingHeader() {
+private fun GreetingHeader(modifier: Modifier = Modifier) {
     val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     val greeting = when (hour) {
         in 4..10 -> DownloaderApp.str(R.string.greeting_morning)
@@ -198,7 +216,7 @@ private fun GreetingHeader() {
     }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -215,61 +233,70 @@ private fun GreetingHeader() {
             )
         }
         Spacer(Modifier.width(DownloaderSpacing.md))
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(DownloaderColors.PrimarySoft)
-                .border(1.dp, DownloaderColors.Border, CircleShape),
-            contentAlignment = Alignment.Center,
+        Image(
+            painter = painterResource(R.drawable.fluxen_logo),
+            contentDescription = DownloaderApp.str(R.string.about_logo_desc),
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(40.dp),
+        )
+    }
+}
+
+@Composable
+private fun StatsRow(
+    completed: Int,
+    active: Int,
+    totalBytes: Long,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(DownloaderSpacing.md),
+    ) {
+        StatCard(
+            label = DownloaderApp.str(R.string.stat_completed),
+            valueColor = DownloaderColors.Primary,
+            modifier = Modifier.weight(1f),
         ) {
-            Image(
-                painter = painterResource(R.drawable.brand_logo),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape),
+            AnimatedIntText(
+                value = completed,
+                style = DownloaderText.statValue,
+                color = DownloaderColors.Primary,
+                padStart = 2,
+            )
+        }
+        StatCard(
+            label = DownloaderApp.str(R.string.stat_active),
+            valueColor = DownloaderColors.Cyan,
+            modifier = Modifier.weight(1f),
+        ) {
+            AnimatedIntText(
+                value = active,
+                style = DownloaderText.statValue,
+                color = DownloaderColors.Cyan,
+                padStart = 2,
+            )
+        }
+        StatCard(
+            label = DownloaderApp.str(R.string.stat_total_data),
+            valueColor = DownloaderColors.TextPrimary,
+            modifier = Modifier.weight(1f),
+        ) {
+            AnimatedBytesText(
+                value = totalBytes,
+                style = DownloaderText.statValueSm,
+                color = DownloaderColors.TextPrimary,
             )
         }
     }
 }
 
 @Composable
-private fun StatsRow(completed: Int, active: Int, totalBytes: Long) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(DownloaderSpacing.md),
-    ) {
-        StatCard(
-            value = completed.coerceAtLeast(0).toString().padStart(2, '0'),
-            label = DownloaderApp.str(R.string.stat_completed),
-            valueColor = DownloaderColors.Primary,
-            modifier = Modifier.weight(1f),
-        )
-        StatCard(
-            value = active.coerceAtLeast(0).toString().padStart(2, '0'),
-            label = DownloaderApp.str(R.string.stat_active),
-            valueColor = DownloaderColors.Cyan,
-            modifier = Modifier.weight(1f),
-        )
-        StatCard(
-            value = Formatters.bytes(totalBytes),
-            label = DownloaderApp.str(R.string.stat_total_data),
-            valueColor = DownloaderColors.TextPrimary,
-            compactValue = true,
-            modifier = Modifier.weight(1f),
-        )
-    }
-}
-
-@Composable
 private fun StatCard(
-    value: String,
     label: String,
     valueColor: Color,
     modifier: Modifier = Modifier,
-    compactValue: Boolean = false,
+    valueContent: @Composable () -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(DownloaderRadius.cardLg),
@@ -282,13 +309,7 @@ private fun StatCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(
-                text = value,
-                style = if (compactValue) DownloaderText.statValueSm else DownloaderText.statValue,
-                color = valueColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            valueContent()
             Spacer(Modifier.height(2.dp))
             Text(
                 text = label,
@@ -301,9 +322,12 @@ private fun StatCard(
 }
 
 @Composable
-private fun QuickTypeRow(onQuickType: (String?) -> Unit) {
+private fun QuickTypeRow(
+    onQuickType: (String?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(DownloaderSpacing.sm),
     ) {
         QuickTypeCard(
@@ -355,7 +379,7 @@ private fun QuickTypeCard(
         shape = RoundedCornerShape(DownloaderRadius.md),
         color = DownloaderColors.Surface,
         border = BorderStroke(1.dp, DownloaderColors.Border),
-        modifier = modifier,
+        modifier = modifier.pressScale(scaleDown = 0.94f),
     ) {
         Column(
             modifier = Modifier
@@ -395,7 +419,11 @@ private fun QuickTypeCard(
  * layar Riwayat supaya baris tetap ringkas.
  */
 @Composable
-private fun RecentDownloadRow(entry: HistoryEntry, onClick: () -> Unit) {
+private fun RecentDownloadRow(
+    entry: HistoryEntry,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val completed = entry.status == HistoryStatus.COMPLETED
     val title = entry.fileName.ifBlank { entry.title }
     val meta = if (completed) recentMeta(entry) else historyStatusLabel(entry.status)
@@ -404,9 +432,10 @@ private fun RecentDownloadRow(entry: HistoryEntry, onClick: () -> Unit) {
         onClick = onClick,
         shape = RoundedCornerShape(DownloaderRadius.artwork),
         color = DownloaderColors.Surface,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(44.dp),
+            .height(44.dp)
+            .pressScale(scaleDown = 0.985f),
     ) {
         Row(
             modifier = Modifier

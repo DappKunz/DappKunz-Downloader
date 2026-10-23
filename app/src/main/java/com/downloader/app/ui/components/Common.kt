@@ -61,11 +61,16 @@ fun SectionHeader(
 }
 
 @Composable
-fun StatusChip(label: String, color: Color) {
+fun StatusChip(
+    label: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
     Surface(
         shape = RoundedCornerShape(50),
         color = color.copy(alpha = 0.16f),
         contentColor = color,
+        modifier = modifier,
     ) {
         Text(
             text = label,

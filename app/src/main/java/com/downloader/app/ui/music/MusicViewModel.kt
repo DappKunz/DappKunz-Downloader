@@ -12,7 +12,7 @@ import com.downloader.app.core.music.Track
 import com.downloader.app.core.storage.PrefsRepository
 
 /** Kategori yang bisa ditelusuri di Music Library. */
-enum class LibraryCategory { SONGS, ALBUMS, ARTISTS, FOLDERS, FAVORITES, PLAYLISTS }
+enum class LibraryCategory { SONGS, ALBUMS, ARTISTS, FOLDERS, FAVORITES, PLAYLISTS, RECENT }
 
 /** Layar turunan di dalam Music Library (album/artis/folder/playlist yang dibuka). */
 sealed interface LibraryDetail {

@@ -1,5 +1,8 @@
 package com.downloader.app.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,9 +24,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,16 +54,34 @@ fun DownloaderChip(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
+    val fill by animateColorAsState(
+        targetValue = if (selected) DownloaderColors.PrimarySoft else DownloaderColors.Surface,
+        animationSpec = tween(220),
+        label = "chipFill",
+    )
+    val stroke by animateColorAsState(
+        targetValue = if (selected) DownloaderColors.Primary else DownloaderColors.Border,
+        animationSpec = tween(220),
+        label = "chipStroke",
+    )
+    val labelColor by animateColorAsState(
+        targetValue = when {
+            !enabled -> DownloaderColors.TextMuted
+            selected -> DownloaderColors.TextOnSoft
+            else -> DownloaderColors.TextSecondary
+        },
+        animationSpec = tween(200),
+        label = "chipLabel",
+    )
     Surface(
         onClick = onClick,
         enabled = enabled,
         shape = RoundedCornerShape(DownloaderRadius.pill),
-        color = if (selected) DownloaderColors.PrimarySoft else DownloaderColors.Surface,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (selected) DownloaderColors.Primary else DownloaderColors.Border,
-        ),
-        modifier = modifier.height(DownloaderDimens.chipHeight),
+        color = fill,
+        border = BorderStroke(width = 1.dp, color = stroke),
+        modifier = modifier
+            .height(DownloaderDimens.chipHeight)
+            .pressScale(scaleDown = 0.93f),
     ) {
         Box(
             modifier = Modifier.padding(horizontal = 12.dp),
@@ -64,11 +90,7 @@ fun DownloaderChip(
             Text(
                 text = label,
                 style = DownloaderText.chip,
-                color = when {
-                    !enabled -> DownloaderColors.TextMuted
-                    selected -> DownloaderColors.TextOnSoft
-                    else -> DownloaderColors.TextSecondary
-                },
+                color = labelColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -88,13 +110,24 @@ fun DownloaderSearchField(
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(DownloaderRadius.field)
+    var focused by remember { mutableStateOf(false) }
+    val borderColor by animateColorAsState(
+        targetValue = if (focused) DownloaderColors.Primary else DownloaderColors.Border,
+        animationSpec = tween(220),
+        label = "searchBorder",
+    )
+    val borderWidth by animateDpAsState(
+        targetValue = if (focused) 1.5.dp else 1.dp,
+        animationSpec = tween(220),
+        label = "searchBorderWidth",
+    )
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(DownloaderDimens.searchHeight)
             .clip(shape)
             .background(DownloaderColors.Background)
-            .border(1.dp, DownloaderColors.Border, shape)
+            .border(borderWidth, borderColor, shape)
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -111,7 +144,9 @@ fun DownloaderSearchField(
             singleLine = true,
             textStyle = DownloaderText.rowTitleSm.copy(color = DownloaderColors.TextPrimary),
             cursorBrush = SolidColor(DownloaderColors.Primary),
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .onFocusChanged { focused = it.isFocused },
             decorationBox = { inner ->
                 Box(contentAlignment = Alignment.CenterStart) {
                     if (value.isEmpty()) {

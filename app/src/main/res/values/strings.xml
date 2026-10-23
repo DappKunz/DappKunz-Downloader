@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Downloader</string>
+    <string name="app_name">Fluxen</string>
 
     <!-- Navigasi -->
     <string name="nav_home">Beranda</string>
@@ -13,6 +13,25 @@
     <!-- Online Music -->
     <string name="online_music_title">Online Music</string>
     <string name="online_music_subtitle">Telusuri dan unduh musik dari sumber yang didukung.</string>
+    <string name="online_music_tag">ONLINE MUSIC</string>
+    <string name="online_music_hero_title">Dunia musik, satu ketukan.</string>
+    <string name="online_music_hero_meta">Cari lagu, pilih sumber, lalu unduh.</string>
+    <string name="online_music_hero_action">Cari sekarang</string>
+    <string name="online_music_chip_for_you">Untukmu</string>
+    <string name="online_music_chip_pop">Pop</string>
+    <string name="online_music_chip_lofi">Lo-fi</string>
+    <string name="online_music_chip_rock">Rock</string>
+    <string name="online_music_chip_jazz">Jazz</string>
+    <string name="online_music_trending">Trending Now</string>
+    <string name="online_music_made_for_you">Made For You</string>
+    <string name="online_music_shortcut_desc">Ketuk untuk mencari</string>
+    <string name="online_music_shortcut_pop">Populer minggu ini</string>
+    <string name="online_music_shortcut_lofi">Lo-fi untuk fokus</string>
+    <string name="online_music_shortcut_rock">Rock klasik</string>
+    <string name="online_music_shortcut_jazz">Jazz malam</string>
+    <string name="online_music_playlist_top">Top Hits</string>
+    <string name="online_music_playlist_chill">Chill Vibes</string>
+    <string name="online_music_playlist_acoustic">Acoustic</string>
     <string name="online_music_hint">Cari lagu, artis, atau kata kunci</string>
     <string name="online_music_search">Cari</string>
     <string name="online_music_idle_title">Cari musik online</string>
@@ -147,7 +166,10 @@
     <string name="download_preset_storage_confirm_desc">Video dibatasi 480p tanpa HD (audio saja memakai 128 kbps). Kualitas lebih rendah, tetapi ukuran file lebih kecil.</string>
     <string name="download_preset_storage_confirm_action">Pakai Hemat</string>
     <string name="download_preset_balanced_note">Preset Seimbang: mode Turbo dinonaktifkan agar antrean lebih ringan.</string>
-    <string name="url_hint">Tautan media (YouTube, TikTok, Instagram, X, dll.)</string>
+    <string name="url_hint">Tautan media (YouTube, TikTok, dll.)</string>
+    <string name="url_status_hint">Tautan media • tempel atau ketik URL</string>
+    <string name="url_status_ready">Tautan media • siap diunduh</string>
+    <string name="new_download_analyzing">Menganalisis media…</string>
     <string name="action_paste">Tempel dari papan klip</string>
     <string name="action_clear_link">Hapus tautan</string>
     <string name="action_analyze">Analisis</string>
@@ -193,6 +215,7 @@
     <string name="player_no_result_desc">Coba kata kunci atau urutan lain.</string>
     <string name="player_filter_favorites">Favorit</string>
     <string name="player_favorite_add">Tambah ke favorit</string>
+    <string name="player_more">Lainnya</string>
     <string name="player_favorite_remove">Hapus dari favorit</string>
     <string name="player_no_favorites_title">Belum ada favorit</string>
     <string name="player_no_favorites_desc">Tandai lagu dengan ikon hati untuk menambahkannya ke favorit.</string>
@@ -248,10 +271,11 @@
 
     <!-- Pengaturan -->
     <string name="settings_title">Pengaturan</string>
+    <string name="settings_subtitle">Personalisasi pengalaman Fluxen.</string>
     <string name="settings_download_section">Unduhan</string>
     <string name="settings_turbo_title">Turbo Download</string>
-    <string name="settings_turbo_desc">Kecepatan maksimal: koneksi paralel lebih banyak. Lebih boros baterai dan data.</string>
-    <string name="settings_storage_section">Penyimpanan</string>
+    <string name="settings_turbo_desc">Unduh beberapa file bersamaan</string>
+    <string name="settings_storage_section">Preferensi</string>
     <string name="settings_history_section">Riwayat &amp; Log</string>
     <string name="settings_history_title">Riwayat Download</string>
     <string name="settings_history_desc">Lihat semua hasil unduhan.</string>
@@ -259,7 +283,7 @@
     <string name="settings_log_desc">Catatan aktivitas dan error untuk debugging.</string>
     <string name="settings_folder_title">Folder Download</string>
     <string name="settings_folder_current">Folder saat ini</string>
-    <string name="settings_folder_default">Download/Downloader (bawaan)</string>
+    <string name="settings_folder_default">Download/Downloader</string>
     <string name="settings_folder_pick">Pilih Folder</string>
     <string name="settings_folder_change">Ganti Folder</string>
     <string name="settings_folder_picked">Folder dipilih: %1$s</string>
@@ -270,8 +294,46 @@
     <string name="settings_folder_reset_action">Reset</string>
     <string name="settings_folder_reset_done">Folder dikembalikan ke bawaan.</string>
     <string name="settings_language_section">Bahasa</string>
-    <string name="settings_language_title">Bahasa Aplikasi</string>
+    <string name="settings_language_title">Bahasa</string>
     <string name="settings_language_dialog_title">Pilih Bahasa</string>
+    <string name="language_sheet_title">Pilih Bahasa</string>
+    <string name="language_sheet_desc">Pilih bahasa antarmuka aplikasi.</string>
+    <string name="language_sheet_apply">Terapkan</string>
+    <string name="settings_appearance_section">Tampilan</string>
+    <string name="settings_appearance_title">Tampilan</string>
+    <string name="appearance_title">Tampilan</string>
+    <string name="appearance_mode_dark">Mode Gelap</string>
+    <string name="appearance_mode_light">Mode Terang</string>
+    <string name="appearance_palette_label">Palet Warna</string>
+    <string name="appearance_font_label">Font</string>
+    <string name="appearance_palette_blue">Biru</string>
+    <string name="appearance_palette_red">Merah</string>
+    <string name="appearance_palette_green">Hijau</string>
+    <string name="appearance_palette_custom">Custom</string>
+    <string name="appearance_palette_custom_value">Custom (%1$s)</string>
+    <string name="appearance_font_default">Default</string>
+    <string name="appearance_font_system">System Font</string>
+    <string name="appearance_font_arkun">ArkunSans</string>
+    <string name="appearance_font_custom">Custom Font</string>
+    <string name="appearance_font_unavailable">Belum tersedia</string>
+    <string name="appearance_font_applied">Font %1$s diterapkan.</string>
+    <string name="appearance_font_too_large">Ukuran file font melebihi 20 MB.</string>
+    <string name="appearance_font_invalid">File bukan font TTF/OTF yang valid.</string>
+    <string name="appearance_font_unreadable">File font tidak dapat dibaca. Pilihan sebelumnya tetap dipakai.</string>
+    <string name="appearance_font_pick">Pilih file font TTF/OTF</string>
+    <string name="appearance_custom_color_title">Warna Kustom</string>
+    <string name="appearance_custom_color_desc">Geser untuk memilih warna. Kode HEX diperbarui otomatis.</string>
+    <string name="appearance_custom_color_label">Kode HEX</string>
+    <string name="appearance_custom_color_hint">#3B82F6</string>
+    <string name="appearance_custom_color_invalid">Warna tidak valid. Coba pilih ulang.</string>
+    <string name="appearance_custom_color_apply">Terapkan</string>
+    <string name="appearance_summary_short">%1$s • %2$s</string>
+    <string name="appearance_color_pick">Pilih warna kustom</string>
+    <string name="appearance_color_picker_sv">Saturasi dan kecerahan</string>
+    <string name="appearance_color_picker_hue">Hue</string>
+    <string name="appearance_color_picker_presets">Pilihan cepat</string>
+    <string name="appearance_color_picker_drag">Geser untuk memilih warna</string>
+    <string name="appearance_color_picker_hex">Kode warna</string>
     <string name="language_indonesian">Bahasa Indonesia</string>
     <string name="language_english">English</string>
     <string name="settings_cache_section">Cache</string>
@@ -286,7 +348,8 @@
     <string name="settings_cache_nothing">Tidak ada cache yang bisa dihapus.</string>
     <string name="settings_cache_busy">Cache unduhan aktif dilewati.</string>
     <string name="settings_about_section">Aplikasi</string>
-    <string name="settings_about_title">Tentang Aplikasi</string>
+    <string name="settings_about_title">Tentang Fluxen</string>
+    <string name="settings_about_subtitle">Developer, versi, dan lisensi</string>
     <string name="settings_debug_title">Debug</string>
     <string name="settings_debug_desc">Info perangkat, mesin, dan penyimpanan.</string>
 
@@ -295,7 +358,12 @@
     <string name="about_version">Versi %1$s (build %2$s)</string>
     <string name="about_version_short">v%1$s</string>
     <string name="about_developer_label">Developer</string>
-    <string name="about_developer_value">DappKunzXD</string>
+    <string name="about_developer_value">DappKunz</string>
+    <string name="about_logo_desc">Logo aplikasi Fluxen</string>
+    <string name="about_maintainers_label">Maintainer</string>
+    <string name="about_maintainer_1_name">DappKunz</string>
+    <string name="about_maintainer_2_name">n4zzuu</string>
+    <string name="about_open_profile">Buka profil GitHub %1$s</string>
     <string name="about_build_info">Informasi Build Aplikasi</string>
     <string name="about_language">Bahasa</string>
     <string name="about_version_label">Versi :</string>
@@ -409,12 +477,24 @@
     <string name="settings_update_title">Pembaruan Aplikasi</string>
     <string name="settings_update_desc">Periksa rilis terbaru dari GitHub.</string>
     <string name="upd_title">Pembaruan Aplikasi</string>
+    <string name="upd_subtitle">Periksa rilis terbaru melalui GitHub.</string>
+    <string name="upd_section_check">Pemeriksaan Update</string>
+    <string name="upd_version_label">Versi Terpasang</string>
+    <string name="upd_version_note">Kanal stabil • APK arm64-v8a</string>
     <string name="upd_installed">Terpasang: %1$s</string>
     <string name="upd_last_checked">Terakhir diperiksa: %1$s</string>
     <string name="upd_never_checked">Belum pernah diperiksa</string>
     <string name="upd_check">Periksa Pembaruan</string>
     <string name="upd_retry">Coba Lagi</string>
     <string name="upd_checking">Memeriksa rilis terbaru…</string>
+    <string name="upd_status_checking">Memeriksa pembaruan</string>
+    <string name="upd_status_idle">Siap diperiksa</string>
+    <string name="upd_status_no_release">Belum ada rilis</string>
+    <string name="upd_status_latest">Versi terbaru</string>
+    <string name="upd_status_uncomparable">Versi tidak diketahui</string>
+    <string name="upd_status_error">Pemeriksaan gagal</string>
+    <string name="upd_status_downloading">Mengunduh pembaruan</string>
+    <string name="upd_status_downloaded">Siap dipasang</string>
     <string name="upd_idle">Periksa pembaruan untuk melihat rilis terbaru dari GitHub.</string>
     <string name="upd_no_release">Belum ada rilis yang dipublikasikan.</string>
     <string name="upd_up_to_date">Aplikasi sudah menggunakan versi terbaru.</string>
@@ -449,7 +529,7 @@
     <!-- Donasi -->
     <string name="settings_donation_section">Dukungan</string>
     <string name="settings_donation_title">Donasi</string>
-    <string name="settings_donation_desc">Dukung pengembangan Downloader</string>
+    <string name="settings_donation_desc">Dukung pengembangan Fluxen</string>
     <string name="donation_title">Donasi</string>
     <string name="donation_subtitle">Halaman Saweria terbuka di dalam aplikasi.</string>
     <string name="donation_reload">Muat Ulang</string>
@@ -473,6 +553,11 @@
     <string name="player_cat_folders">Folder</string>
     <string name="player_cat_favorites">Favorit</string>
     <string name="player_cat_playlists">Playlist</string>
+    <string name="player_cat_recent">Baru Ditambahkan</string>
+    <string name="player_quick_collections">Koleksi Cepat</string>
+    <string name="player_collection_favorites_desc">%1$d lagu disukai</string>
+    <string name="player_collection_playlists_desc">%1$d playlist</string>
+    <string name="player_collection_open">Buka koleksi</string>
     <string name="player_sort_album">Album</string>
     <string name="player_play_all">Putar semua</string>
     <string name="player_shuffle_all">Acak semua</string>

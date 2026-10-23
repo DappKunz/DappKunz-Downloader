@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -53,6 +53,9 @@ import com.downloader.app.ui.components.DownloaderChip
 import com.downloader.app.ui.components.DownloaderSearchField
 import com.downloader.app.ui.components.EmptyStateBox
 import com.downloader.app.ui.components.HistoryItem
+import com.downloader.app.ui.components.MotionDialog
+import com.downloader.app.ui.components.entrance
+import com.downloader.app.ui.components.pressScale
 import com.downloader.app.ui.theme.DownloaderColors
 import com.downloader.app.ui.theme.DownloaderRadius
 import com.downloader.app.ui.theme.DownloaderSpacing
@@ -115,9 +118,14 @@ fun HistoryScreen(
     val entries by HistoryRepository.entries.collectAsStateWithLifecycle()
     var clearDialog by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<HistoryEntry?>(null) }
+    var deleteSnapshot by remember { mutableStateOf<HistoryEntry?>(null) }
     var query by rememberSaveable { mutableStateOf("") }
     var filter by rememberSaveable { mutableStateOf(HistoryFilter.ALL.name) }
     val activeFilter = HistoryFilter.values().firstOrNull { it.name == filter } ?: HistoryFilter.ALL
+
+    LaunchedEffect(pendingDelete) {
+        if (pendingDelete != null) deleteSnapshot = pendingDelete
+    }
 
     val filtered = remember(entries, query, activeFilter) {
         val q = query.trim()
@@ -139,7 +147,8 @@ fun HistoryScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 6.dp, end = 6.dp, top = 6.dp),
+                .padding(start = 6.dp, end = 6.dp, top = 6.dp)
+                .entrance(0, offsetY = 10),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = onClose) {
@@ -169,13 +178,19 @@ fun HistoryScreen(
             text = DownloaderApp.str(R.string.history_subtitle),
             style = DownloaderText.body,
             color = DownloaderColors.TextSecondary,
-            modifier = Modifier.padding(horizontal = DownloaderSpacing.screen),
+            modifier = Modifier
+                .padding(horizontal = DownloaderSpacing.screen)
+                .entrance(0, offsetY = 10),
         )
 
         Spacer(Modifier.height(16.dp))
 
         if (entries.isNotEmpty()) {
-            Column(modifier = Modifier.padding(horizontal = DownloaderSpacing.screen)) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = DownloaderSpacing.screen)
+                    .entrance(1, offsetY = 12),
+            ) {
                 DownloaderSearchField(
                     value = query,
                     onValueChange = { query = it },
@@ -205,14 +220,18 @@ fun HistoryScreen(
                 icon = Icons.Rounded.History,
                 title = DownloaderApp.str(R.string.history_empty_title),
                 description = DownloaderApp.str(R.string.history_empty_desc),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .entrance(2),
             )
 
             filtered.isEmpty() -> EmptyStateBox(
                 icon = Icons.Rounded.SearchOff,
                 title = DownloaderApp.str(R.string.history_no_results_title),
                 description = DownloaderApp.str(R.string.history_no_results_desc),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .entrance(2),
             )
 
             else -> LazyColumn(
@@ -226,14 +245,19 @@ fun HistoryScreen(
                             text = label,
                             style = DownloaderText.sectionTitleSm,
                             color = DownloaderColors.TextPrimary,
-                            modifier = Modifier.padding(top = 4.dp),
+                            modifier = Modifier
+                                .padding(top = 4.dp)
+                                .entrance(0, offsetY = 8),
                         )
                     }
-                    items(dayEntries, key = { it.id }) { entry ->
+                    itemsIndexed(dayEntries, key = { _, entry -> entry.id }) { index, entry ->
                         HistoryItem(
                             entry = entry,
                             onRetry = onRetry,
                             onDelete = { pendingDelete = it },
+                            modifier = Modifier
+                                .entrance(index, offsetY = 12)
+                                .animateItem(),
                         )
                     }
                 }
@@ -241,8 +265,11 @@ fun HistoryScreen(
         }
     }
 
-    if (clearDialog) {
-        ConfirmDialog(
+    MotionDialog(
+        visible = clearDialog,
+        onDismiss = { clearDialog = false },
+    ) {
+        ConfirmDialogContent(
             title = DownloaderApp.str(R.string.history_clear_confirm_title),
             body = DownloaderApp.str(R.string.history_clear_confirm_desc),
             confirmLabel = DownloaderApp.str(R.string.history_clear_all),
@@ -254,18 +281,23 @@ fun HistoryScreen(
         )
     }
 
-    val deleteTarget = pendingDelete
-    if (deleteTarget != null) {
-        ConfirmDialog(
-            title = DownloaderApp.str(R.string.history_delete_confirm_title),
-            body = DownloaderApp.str(R.string.history_delete_confirm_desc),
-            confirmLabel = DownloaderApp.str(R.string.action_delete),
-            onConfirm = {
-                HistoryRepository.remove(deleteTarget.id)
-                pendingDelete = null
-            },
-            onDismiss = { pendingDelete = null },
-        )
+    MotionDialog(
+        visible = pendingDelete != null,
+        onDismiss = { pendingDelete = null },
+    ) {
+        val target = deleteSnapshot
+        if (target != null) {
+            ConfirmDialogContent(
+                title = DownloaderApp.str(R.string.history_delete_confirm_title),
+                body = DownloaderApp.str(R.string.history_delete_confirm_desc),
+                confirmLabel = DownloaderApp.str(R.string.action_delete),
+                onConfirm = {
+                    HistoryRepository.remove(target.id)
+                    pendingDelete = null
+                },
+                onDismiss = { pendingDelete = null },
+            )
+        }
     }
 }
 
@@ -274,78 +306,60 @@ fun HistoryScreen(
  * tile peringatan 44, judul 19·700, isi 11·400, tombol 34 (batal abu, aksi merah).
  */
 @Composable
-private fun ConfirmDialog(
+private fun ConfirmDialogContent(
     title: String,
     body: String,
     confirmLabel: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+    Column(
+        modifier = Modifier.padding(bottom = 15.dp),
     ) {
-        Surface(
-            shape = RoundedCornerShape(DownloaderRadius.dialog),
-            color = DownloaderColors.SurfaceElevated,
-            border = BorderStroke(1.dp, DownloaderColors.Border),
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
+                .size(44.dp)
+                .clip(RoundedCornerShape(DownloaderRadius.row))
+                .background(DownloaderColors.DangerSoft)
+                .entrance(0, offsetY = 6, scaleFrom = 0.8f),
+            contentAlignment = Alignment.Center,
         ) {
-            Column(
-                modifier = Modifier.padding(
-                    start = DownloaderSpacing.xl,
-                    end = DownloaderSpacing.xl,
-                    top = DownloaderSpacing.xl,
-                    bottom = 15.dp,
-                ),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(DownloaderRadius.row))
-                        .background(DownloaderColors.DangerSoft),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        Icons.Rounded.Delete,
-                        contentDescription = null,
-                        tint = DownloaderColors.Danger,
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
-                Spacer(Modifier.height(14.dp))
-                Text(
-                    text = title,
-                    style = DownloaderText.dialogTitle,
-                    color = DownloaderColors.TextPrimary,
-                )
-                Spacer(Modifier.height(9.dp))
-                Text(
-                    text = body,
-                    style = DownloaderText.body,
-                    color = DownloaderColors.TextSecondary,
-                )
-                Spacer(Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    DialogButton(
-                        label = DownloaderApp.str(R.string.action_cancel),
-                        onClick = onDismiss,
-                        modifier = Modifier.weight(104f),
-                    )
-                    Spacer(Modifier.width(DownloaderSpacing.sm))
-                    DialogButton(
-                        label = confirmLabel,
-                        onClick = onConfirm,
-                        danger = true,
-                        modifier = Modifier.weight(193f),
-                    )
-                }
-            }
+            Icon(
+                Icons.Rounded.Delete,
+                contentDescription = null,
+                tint = DownloaderColors.Danger,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = title,
+            style = DownloaderText.dialogTitle,
+            color = DownloaderColors.TextPrimary,
+        )
+        Spacer(Modifier.height(9.dp))
+        Text(
+            text = body,
+            style = DownloaderText.body,
+            color = DownloaderColors.TextSecondary,
+        )
+        Spacer(Modifier.height(20.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            DialogButton(
+                label = DownloaderApp.str(R.string.action_cancel),
+                onClick = onDismiss,
+                modifier = Modifier.weight(104f),
+            )
+            Spacer(Modifier.width(DownloaderSpacing.sm))
+            DialogButton(
+                label = confirmLabel,
+                onClick = onConfirm,
+                danger = true,
+                modifier = Modifier.weight(193f),
+            )
         }
     }
 }
@@ -362,7 +376,9 @@ private fun DialogButton(
         shape = RoundedCornerShape(DownloaderRadius.tile),
         color = if (danger) DownloaderColors.Danger else DownloaderColors.Surface,
         border = if (danger) null else BorderStroke(1.dp, DownloaderColors.Border),
-        modifier = modifier.height(34.dp),
+        modifier = modifier
+            .height(34.dp)
+            .pressScale(scaleDown = 0.94f),
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
@@ -372,7 +388,7 @@ private fun DialogButton(
                 } else {
                     DownloaderText.rowTitleSm
                 },
-                color = if (danger) Color.White else DownloaderColors.TextSecondary,
+                color = if (danger) DownloaderColors.OnDanger else DownloaderColors.TextSecondary,
                 maxLines = 1,
             )
         }

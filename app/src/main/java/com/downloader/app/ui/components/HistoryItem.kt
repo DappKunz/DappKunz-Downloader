@@ -86,22 +86,23 @@ fun HistoryItem(
                 .padding(start = 7.dp, end = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (!entry.thumbnail.isNullOrBlank()) {
-                AsyncImage(
-                    model = entry.thumbnail,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(DownloaderDimens.artworkLg)
-                        .clip(RoundedCornerShape(DownloaderRadius.tileSmall)),
-                )
-            } else {
+            Box(modifier = Modifier.size(DownloaderDimens.artworkLg)) {
                 ArtworkTile(
                     seed = name,
-                    modifier = Modifier.size(DownloaderDimens.artworkLg),
+                    modifier = Modifier.matchParentSize(),
                     corner = DownloaderRadius.tileSmall,
                     label = formatTagLabel(entry.format),
                 )
+                if (!entry.thumbnail.isNullOrBlank()) {
+                    AsyncImage(
+                        model = entry.thumbnail,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(RoundedCornerShape(DownloaderRadius.tileSmall)),
+                    )
+                }
             }
 
             Spacer(Modifier.width(8.dp))

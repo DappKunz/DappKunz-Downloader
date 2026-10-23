@@ -1,5 +1,6 @@
 package com.downloader.app.ui.music
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -10,19 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +35,11 @@ import com.downloader.app.DownloaderApp
 import com.downloader.app.R
 import com.downloader.app.core.music.EqPresets
 import com.downloader.app.core.music.EqualizerController
+import com.downloader.app.ui.components.DownloaderChip
+import com.downloader.app.ui.components.entrance
+import com.downloader.app.ui.components.pressScale
 import com.downloader.app.ui.theme.DownloaderColors
+import com.downloader.app.ui.theme.DownloaderText
 import java.util.Locale
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -49,7 +52,8 @@ fun EqualizerScreen(onClose: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 6.dp, vertical = 6.dp),
+                .padding(horizontal = 6.dp, vertical = 6.dp)
+                .entrance(0, offsetY = 8),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = onClose) {
@@ -60,8 +64,8 @@ fun EqualizerScreen(onClose: () -> Unit) {
             }
             Text(
                 text = DownloaderApp.str(R.string.eq_title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
+                style = DownloaderText.screenTitle,
+                color = DownloaderColors.TextPrimary,
                 modifier = Modifier.weight(1f),
             )
             Switch(
@@ -80,16 +84,16 @@ fun EqualizerScreen(onClose: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (!state.available) {
-                Card(
-                    shape = MaterialTheme.shapes.medium,
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                    ),
+                Surface(
+                    shape = RoundedCornerShape(13.dp),
+                    color = DownloaderColors.DangerSoft,
+                    border = BorderStroke(1.dp, DownloaderColors.Danger.copy(alpha = 0.3f)),
+                    modifier = Modifier.entrance(1),
                 ) {
                     Text(
                         text = state.message ?: DownloaderApp.str(R.string.eq_unavailable),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        style = DownloaderText.body,
+                        color = DownloaderColors.Danger,
                         modifier = Modifier.padding(12.dp),
                     )
                 }
@@ -97,28 +101,29 @@ fun EqualizerScreen(onClose: () -> Unit) {
 
             Text(
                 text = DownloaderApp.str(R.string.eq_preset),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = DownloaderText.sectionTitle,
+                color = DownloaderColors.TextPrimary,
+                modifier = Modifier.entrance(1, offsetY = 8),
             )
             FlowRow(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .entrance(2, offsetY = 8),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 EqPresets.BUILT_IN.forEach { preset ->
-                    FilterChip(
+                    DownloaderChip(
+                        label = preset,
                         selected = state.preset == preset,
                         onClick = { EqualizerController.applyPreset(preset) },
-                        enabled = state.available,
-                        label = { Text(preset) },
                     )
                 }
                 if (state.preset == EqPresets.CUSTOM) {
-                    FilterChip(
+                    DownloaderChip(
+                        label = EqPresets.CUSTOM,
                         selected = true,
                         onClick = { },
-                        enabled = state.available,
-                        label = { Text(EqPresets.CUSTOM) },
                     )
                 }
             }
@@ -126,11 +131,11 @@ fun EqualizerScreen(onClose: () -> Unit) {
             if (state.bands.isEmpty()) {
                 Text(
                     text = DownloaderApp.str(R.string.eq_no_bands),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = DownloaderText.body,
+                    color = DownloaderColors.TextSecondary,
                 )
             } else {
-                state.bands.forEach { band ->
+                state.bands.forEachIndexed { index, band ->
                     val gain = state.gainsDb.getOrNull(band.index) ?: 0
                     BandRow(
                         centerHz = band.centerHz,
@@ -139,6 +144,7 @@ fun EqualizerScreen(onClose: () -> Unit) {
                         maxDb = band.maxDb,
                         enabled = controlsActive,
                         onGain = { EqualizerController.setGain(band.index, it) },
+                        modifier = Modifier.entrance(index.coerceAtMost(6) + 3, offsetY = 8),
                     )
                 }
             }
@@ -146,7 +152,12 @@ fun EqualizerScreen(onClose: () -> Unit) {
             OutlinedButton(
                 onClick = EqualizerController::reset,
                 enabled = state.available,
-                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(15.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(46.dp)
+                    .pressScale(scaleDown = 0.97f)
+                    .entrance(8, offsetY = 8),
             ) {
                 Text(DownloaderApp.str(R.string.eq_reset))
             }
@@ -162,22 +173,26 @@ private fun BandRow(
     maxDb: Int,
     enabled: Boolean,
     onGain: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Card(
-        shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor = DownloaderColors.SurfaceElevated),
+    Surface(
+        shape = RoundedCornerShape(13.dp),
+        color = DownloaderColors.Surface,
+        border = BorderStroke(1.dp, DownloaderColors.Border),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = formatHz(centerHz),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = DownloaderText.rowTitle,
+                    color = DownloaderColors.TextPrimary,
                     modifier = Modifier.weight(1f),
                 )
                 Text(
                     text = formatDb(gainDb),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    style = DownloaderText.meta,
+                    color = DownloaderColors.Primary,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
@@ -188,6 +203,14 @@ private fun BandRow(
                 valueRange = minDb.toFloat()..maxDb.toFloat(),
                 steps = (maxDb - minDb - 1).coerceAtLeast(0),
                 enabled = enabled,
+                colors = SliderDefaults.colors(
+                    thumbColor = DownloaderColors.Primary,
+                    activeTrackColor = DownloaderColors.Primary,
+                    inactiveTrackColor = DownloaderColors.Border,
+                    disabledThumbColor = DownloaderColors.TextMuted,
+                    disabledActiveTrackColor = DownloaderColors.Border,
+                    disabledInactiveTrackColor = DownloaderColors.Border,
+                ),
             )
         }
     }

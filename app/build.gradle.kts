@@ -52,8 +52,8 @@ android {
         applicationId = "com.downloader.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 10104
-        versionName = "1.1.4_Build-7"
+        versionCode = 10105
+        versionName = "1.1.5_Build-8"
 
         vectorDrawables {
             useSupportLibrary = true

@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CloudOff
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,7 +53,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.downloader.app.DownloaderApp
 import com.downloader.app.R
 import com.downloader.app.core.web.SafeWebLinks
+import com.downloader.app.ui.components.MotionDialog
+import com.downloader.app.ui.components.entrance
+import com.downloader.app.ui.components.pressScale
 import com.downloader.app.ui.theme.DownloaderColors
+import com.downloader.app.ui.theme.DownloaderText
 import java.util.Locale
 import kotlinx.coroutines.delay
 
@@ -76,6 +79,11 @@ fun DonationScreen(onClose: () -> Unit) {
     var failed by remember { mutableStateOf(false) }
     var notice by remember { mutableStateOf<Int?>(null) }
     var externalUrl by remember { mutableStateOf<String?>(null) }
+    var pendingExternal by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(externalUrl) {
+        if (externalUrl != null) pendingExternal = externalUrl
+    }
 
     val webView = remember {
         WebView(context).apply {
@@ -193,7 +201,8 @@ fun DonationScreen(onClose: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 6.dp, vertical = 6.dp),
+                .padding(horizontal = 6.dp, vertical = 6.dp)
+                .entrance(0, offsetY = 10),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
@@ -207,13 +216,13 @@ fun DonationScreen(onClose: () -> Unit) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = DownloaderApp.str(R.string.donation_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
+                    style = DownloaderText.screenTitleSm,
+                    color = DownloaderColors.TextPrimary,
                 )
                 Text(
                     text = DownloaderApp.str(R.string.donation_subtitle),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = DownloaderText.body,
+                    color = DownloaderColors.TextSecondary,
                 )
             }
         }
@@ -274,6 +283,7 @@ fun DonationScreen(onClose: () -> Unit) {
                                 loading = true
                                 webView.reload()
                             },
+                            modifier = Modifier.pressScale(scaleDown = 0.96f),
                         ) {
                             Text(DownloaderApp.str(R.string.donation_reload))
                         }
@@ -301,44 +311,55 @@ fun DonationScreen(onClose: () -> Unit) {
         }
     }
 
-    val pending = externalUrl
-    if (pending != null) {
-        val webLink = pending.startsWith("http://", true) || pending.startsWith("https://", true)
-        AlertDialog(
-            onDismissRequest = { externalUrl = null },
-            title = { Text(DownloaderApp.str(R.string.donation_external_title)) },
-            text = {
-                Text(
-                    DownloaderApp.str(R.string.donation_external_desc),
-                )
-            },
-            confirmButton = {
+    MotionDialog(
+        visible = externalUrl != null,
+        onDismiss = { externalUrl = null },
+    ) {
+        val pending = pendingExternal
+        if (pending != null) {
+            val webLink = pending.startsWith("http://", true) || pending.startsWith("https://", true)
+            Text(
+                text = DownloaderApp.str(R.string.donation_external_title),
+                style = DownloaderText.dialogTitle,
+                color = DownloaderColors.TextPrimary,
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = DownloaderApp.str(R.string.donation_external_desc),
+                style = DownloaderText.body,
+                color = DownloaderColors.TextSecondary,
+            )
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = { externalUrl = null }) {
+                    Text(DownloaderApp.str(R.string.action_cancel))
+                }
+                Spacer(Modifier.size(4.dp))
                 TextButton(
                     onClick = {
-                        val target = pending
                         externalUrl = null
-                        if (!openExternally(context, target)) {
+                        if (!openExternally(context, pending)) {
                             notice = R.string.donation_external_missing
                         }
                     },
                 ) {
                     Text(
-                        DownloaderApp.str(
+                        text = DownloaderApp.str(
                             if (webLink) {
                                 R.string.donation_external_browser
                             } else {
                                 R.string.donation_external_app
                             },
                         ),
+                        fontWeight = FontWeight.Bold,
                     )
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { externalUrl = null }) {
-                    Text(DownloaderApp.str(R.string.action_cancel))
-                }
-            },
-        )
+            }
+        }
     }
 }
 

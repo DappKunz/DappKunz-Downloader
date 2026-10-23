@@ -1,12 +1,19 @@
 package com.downloader.app.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -109,13 +116,37 @@ fun AppRoot(sharedUrl: String?, onSharedUrlConsumed: () -> Unit) {
             containerColor = MaterialTheme.colorScheme.background,
             snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
-                Column {
-                    if (miniTrack != null) {
-                        MiniPlayer(onOpen = { showNowPlaying = true })
+                Column(modifier = Modifier.animateContentSize(tween(260))) {
+                    AnimatedContent(
+                        targetState = miniTrack,
+                        contentKey = { it?.id ?: "none" },
+                        transitionSpec = {
+                            (
+                                fadeIn(tween(220)) +
+                                    slideInVertically(tween(280)) { it / 3 } +
+                                    scaleIn(tween(280), initialScale = 0.94f)
+                                ) togetherWith (
+                                fadeOut(tween(160)) +
+                                    slideOutVertically(tween(200)) { it / 4 } +
+                                    scaleOut(tween(200), targetScale = 0.96f)
+                                )
+                        },
+                        label = "miniPlayer",
+                    ) { track ->
+                        if (track != null) {
+                            MiniPlayer(
+                                onOpen = { showNowPlaying = true },
+                                trackOverride = track,
+                            )
+                        }
                     }
                     DownloaderBottomBar(
                         current = tab,
-                        onTabSelected = { tab = it },
+                        newDownloadActive = showNew,
+                        onTabSelected = { next ->
+                            showNew = false
+                            if (next != tab) tab = next
+                        },
                         onNewDownload = {
                             prefill = null
                             showNew = true
@@ -124,62 +155,113 @@ fun AppRoot(sharedUrl: String?, onSharedUrlConsumed: () -> Unit) {
                 }
             },
         ) { padding ->
-            when (tab) {
-                MainTab.HOME -> HomeScreen(
-                    viewModel = homeViewModel,
-                    onQuickType = { format ->
-                        prefill = DownloadPrefill(url = "", format = format)
-                        showNew = true
+            Box(modifier = Modifier.fillMaxSize()) {
+                AnimatedContent(
+                    targetState = tab,
+                    transitionSpec = {
+                        (
+                            fadeIn(tween(280)) +
+                                slideInHorizontally(tween(360)) { it / 9 } +
+                                scaleIn(tween(360), initialScale = 0.985f)
+                            ) togetherWith (
+                            fadeOut(tween(170)) +
+                                slideOutHorizontally(tween(240)) { -it / 18 } +
+                                scaleOut(tween(240), targetScale = 0.992f)
+                            )
                     },
-                    onSeeAllHistory = { showHistory = true },
-                    onRetry = { entry ->
-                        prefill = entry.toPrefill()
-                        showHistory = false
-                        showNew = true
-                    },
-                    modifier = Modifier.padding(padding),
-                )
+                    label = "mainTab",
+                    modifier = Modifier.fillMaxSize(),
+                ) { targetTab ->
+                    when (targetTab) {
+                        MainTab.HOME -> HomeScreen(
+                            viewModel = homeViewModel,
+                            onQuickType = { format ->
+                                prefill = DownloadPrefill(url = "", format = format)
+                                showNew = true
+                            },
+                            onSeeAllHistory = { showHistory = true },
+                            onRetry = { entry ->
+                                prefill = entry.toPrefill()
+                                showHistory = false
+                                showNew = true
+                            },
+                            modifier = Modifier.padding(padding),
+                        )
 
-                MainTab.MUSIC -> MusicScreen(
-                    onOpenPlayer = { showNowPlaying = true },
-                    modifier = Modifier.padding(padding),
-                )
+                        MainTab.MUSIC -> MusicScreen(
+                            onOpenPlayer = { showNowPlaying = true },
+                            modifier = Modifier.padding(padding),
+                        )
 
-                MainTab.ONLINE_MUSIC -> OnlineMusicScreen(
-                    onDownload = { url ->
-                        prefill = DownloadPrefill(url = url)
-                        showNew = true
-                    },
-                    modifier = Modifier.padding(padding),
-                )
+                        MainTab.ONLINE_MUSIC -> OnlineMusicScreen(
+                            onDownload = { url ->
+                                prefill = DownloadPrefill(url = url)
+                                showNew = true
+                            },
+                            modifier = Modifier.padding(padding),
+                        )
 
-                MainTab.SETTINGS -> SettingsScreen(
-                    onAbout = { showAbout = true },
-                    onUpdate = { showUpdates = true },
-                    onHistory = { showHistory = true },
-                    onLog = { showLog = true },
-                    onDebug = { showDebug = true },
-                    onDonate = { showDonation = true },
-                    modifier = Modifier.padding(padding),
-                )
-            }
-        }
-
-        Overlay(visible = showNew, onDismiss = { showNew = false }) {
-            NewDownloadScreen(
-                prefill = prefill,
-                onPrefillConsumed = { prefill = null },
-                onClose = { showNew = false },
-                onStarted = {
-                    showNew = false
-                    tab = MainTab.HOME
-                },
-                onDuplicate = {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(DownloaderApp.str(R.string.snackbar_duplicate))
+                        MainTab.SETTINGS -> SettingsScreen(
+                            onAbout = { showAbout = true },
+                            onUpdate = { showUpdates = true },
+                            onDebug = { showDebug = true },
+                            onDonate = { showDonation = true },
+                            modifier = Modifier.padding(padding),
+                        )
                     }
-                },
-            )
+                }
+
+                // Layar analisis media tetap menampilkan bottom navigation
+                // seperti frame "Screen / 02 — Download" di Figma.
+                AnimatedVisibility(
+                    visible = showNew,
+                    enter = slideInHorizontally(
+                        animationSpec = tween(
+                            360,
+                            easing = com.downloader.app.ui.components.DownloaderMotion.EaseOut,
+                        ),
+                    ) { it / 6 } +
+                        fadeIn(tween(220)) +
+                        scaleIn(tween(360), initialScale = 0.985f),
+                    exit = slideOutHorizontally(
+                        animationSpec = tween(
+                            240,
+                            easing = com.downloader.app.ui.components.DownloaderMotion.EaseInOut,
+                        ),
+                    ) { it / 10 } +
+                        fadeOut(tween(170)) +
+                        scaleOut(tween(240), targetScale = 0.992f),
+                ) {
+                    BackHandler(onBack = { showNew = false })
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(padding),
+                        ) {
+                            NewDownloadScreen(
+                                prefill = prefill,
+                                onPrefillConsumed = { prefill = null },
+                                onClose = { showNew = false },
+                                onStarted = {
+                                    showNew = false
+                                    tab = MainTab.HOME
+                                },
+                                onDuplicate = {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            DownloaderApp.str(R.string.snackbar_duplicate),
+                                        )
+                                    }
+                                },
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         Overlay(visible = showHistory, onDismiss = { showHistory = false }) {
@@ -233,8 +315,16 @@ private fun Overlay(
 ) {
     AnimatedVisibility(
         visible = visible,
-        enter = slideInHorizontally(animationSpec = tween(300)) { it / 4 } + fadeIn(tween(240)),
-        exit = slideOutHorizontally(animationSpec = tween(220)) { it / 4 } + fadeOut(tween(180)),
+        enter = slideInHorizontally(
+            animationSpec = tween(380, easing = com.downloader.app.ui.components.DownloaderMotion.EaseOut),
+        ) { it / 5 } +
+            fadeIn(tween(240)) +
+            scaleIn(tween(380), initialScale = 0.975f),
+        exit = slideOutHorizontally(
+            animationSpec = tween(240, easing = com.downloader.app.ui.components.DownloaderMotion.EaseInOut),
+        ) { it / 8 } +
+            fadeOut(tween(180)) +
+            scaleOut(tween(240), targetScale = 0.99f),
     ) {
         BackHandler(onBack = onDismiss)
         Surface(

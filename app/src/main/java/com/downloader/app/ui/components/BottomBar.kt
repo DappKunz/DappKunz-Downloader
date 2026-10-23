@@ -1,6 +1,8 @@
 package com.downloader.app.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -64,6 +66,7 @@ fun DownloaderBottomBar(
     current: MainTab,
     onTabSelected: (MainTab) -> Unit,
     onNewDownload: () -> Unit,
+    newDownloadActive: Boolean = false,
 ) {
     val shape = RoundedCornerShape(DownloaderRadius.nav)
 
@@ -77,68 +80,75 @@ fun DownloaderBottomBar(
                 bottom = 8.dp,
             ),
     ) {
+        // Ruang ekstra di atas panel menampung bagian FAB yang menonjol.
+        // Tanpa ruang ini, setengah atas FAB terpotong oleh batas Scaffold.
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(DownloaderDimens.navBarHeight)
-                .clip(shape)
-                .background(DownloaderColors.Glass.copy(alpha = 0.94f))
-                .border(1.dp, DownloaderColors.Border, shape),
+                .height(DownloaderDimens.navBarHeight + DownloaderDimens.fabLift),
         ) {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(DownloaderDimens.navBarHeight)
+                    .align(Alignment.BottomCenter)
+                    .clip(shape)
+                    .background(DownloaderColors.Glass.copy(alpha = 0.94f))
+                    .border(1.dp, DownloaderColors.Border, shape),
             ) {
-                BottomNavItem(
-                    icon = Icons.Rounded.Home,
-                    label = DownloaderApp.str(R.string.nav_home),
-                    selected = current == MainTab.HOME,
-                    onClick = { onTabSelected(MainTab.HOME) },
-                    modifier = Modifier.weight(1f),
-                )
-                BottomNavItem(
-                    icon = Icons.Rounded.MusicNote,
-                    label = DownloaderApp.str(R.string.nav_music),
-                    selected = current == MainTab.MUSIC,
-                    onClick = { onTabSelected(MainTab.MUSIC) },
-                    badge = { BetaBadge(compact = true) },
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(Modifier.weight(1f))
-                BottomNavItem(
-                    icon = Icons.Rounded.Explore,
-                    label = DownloaderApp.str(R.string.nav_online_music),
-                    selected = current == MainTab.ONLINE_MUSIC,
-                    onClick = { onTabSelected(MainTab.ONLINE_MUSIC) },
-                    modifier = Modifier.weight(1f),
-                )
-                BottomNavItem(
-                    icon = Icons.Rounded.Settings,
-                    label = DownloaderApp.str(R.string.nav_settings),
-                    selected = current == MainTab.SETTINGS,
-                    onClick = { onTabSelected(MainTab.SETTINGS) },
-                    modifier = Modifier.weight(1f),
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    BottomNavItem(
+                        icon = Icons.Rounded.Home,
+                        label = DownloaderApp.str(R.string.nav_home),
+                        selected = !newDownloadActive && current == MainTab.HOME,
+                        onClick = { onTabSelected(MainTab.HOME) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    BottomNavItem(
+                        icon = Icons.Rounded.MusicNote,
+                        label = DownloaderApp.str(R.string.nav_music),
+                        selected = !newDownloadActive && current == MainTab.MUSIC,
+                        onClick = { onTabSelected(MainTab.MUSIC) },
+                        badge = { BetaBadge(compact = true) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(Modifier.weight(1f))
+                    BottomNavItem(
+                        icon = Icons.Rounded.Explore,
+                        label = DownloaderApp.str(R.string.nav_online_music),
+                        selected = !newDownloadActive && current == MainTab.ONLINE_MUSIC,
+                        onClick = { onTabSelected(MainTab.ONLINE_MUSIC) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    BottomNavItem(
+                        icon = Icons.Rounded.Settings,
+                        label = DownloaderApp.str(R.string.nav_settings),
+                        selected = !newDownloadActive && current == MainTab.SETTINGS,
+                        onClick = { onTabSelected(MainTab.SETTINGS) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
+                // Label di bawah FAB (desain: baris label yang sama dengan item lain).
+                Text(
+                    text = DownloaderApp.str(R.string.nav_download),
+                    style = DownloaderText.navLabel,
+                    color = DownloaderColors.TextPrimary,
+                    maxLines = 1,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 14.dp),
                 )
             }
 
-            // Label di bawah FAB (desain: baris label yang sama dengan item lain).
-            Text(
-                text = DownloaderApp.str(R.string.nav_download),
-                style = DownloaderText.navLabel,
-                color = DownloaderColors.TextPrimary,
-                maxLines = 1,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 14.dp),
+            CenterDownloadButton(
+                onClick = onNewDownload,
+                modifier = Modifier.align(Alignment.TopCenter),
             )
         }
-
-        CenterDownloadButton(
-            onClick = onNewDownload,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = -DownloaderDimens.fabLift),
-        )
     }
 }
 
@@ -151,14 +161,28 @@ private fun RowScope.BottomNavItem(
     modifier: Modifier = Modifier,
     badge: (@Composable () -> Unit)? = null,
 ) {
-    val iconTint = if (selected) DownloaderColors.Primary else DownloaderColors.TextMuted
-    val labelTint = if (selected) DownloaderColors.PrimaryLight else DownloaderColors.TextMuted
+    val iconTint by animateColorAsState(
+        targetValue = if (selected) DownloaderColors.Primary else DownloaderColors.TextMuted,
+        animationSpec = tween(240),
+        label = "navIconTint",
+    )
+    val labelTint by animateColorAsState(
+        targetValue = if (selected) DownloaderColors.PrimaryLight else DownloaderColors.TextMuted,
+        animationSpec = tween(240),
+        label = "navLabelTint",
+    )
+    val selection by animateFloatAsState(
+        targetValue = if (selected) 1f else 0f,
+        animationSpec = spring(dampingRatio = 0.62f, stiffness = 520f),
+        label = "navSelection",
+    )
 
     Column(
         modifier = modifier
             .height(DownloaderDimens.navItemHeight)
             .clip(RoundedCornerShape(DownloaderRadius.card))
             .clickable(onClick = onClick)
+            .pressScale(scaleDown = 0.92f)
             .padding(top = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -167,7 +191,13 @@ private fun RowScope.BottomNavItem(
             imageVector = icon,
             contentDescription = null,
             tint = iconTint,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier
+                .size(20.dp)
+                .graphicsLayer {
+                    scaleX = 1f + 0.14f * selection
+                    scaleY = 1f + 0.14f * selection
+                    translationY = -1.5.dp.toPx() * selection
+                },
         )
         Spacer(Modifier.height(5.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -177,6 +207,10 @@ private fun RowScope.BottomNavItem(
                 color = labelTint,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.graphicsLayer {
+                    scaleX = 1f + 0.035f * selection
+                    scaleY = 1f + 0.035f * selection
+                },
             )
             if (badge != null) {
                 Spacer(Modifier.width(4.dp))
@@ -214,7 +248,7 @@ private fun CenterDownloadButton(onClick: () -> Unit, modifier: Modifier = Modif
         Icon(
             imageVector = Icons.Rounded.Add,
             contentDescription = DownloaderApp.str(R.string.nav_new_download),
-            tint = DownloaderColors.TextPrimary,
+            tint = DownloaderColors.OnPrimary,
             modifier = Modifier.size(22.dp),
         )
     }
